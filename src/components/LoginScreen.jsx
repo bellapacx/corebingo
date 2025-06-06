@@ -20,7 +20,7 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
     setErrorMsg('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/loginshop', {  // adjust URL as needed
+      const response = await fetch('https://bingoapi-qtai.onrender.com/loginshop', {  // adjust URL as needed
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
