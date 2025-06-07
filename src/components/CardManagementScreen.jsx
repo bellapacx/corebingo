@@ -37,7 +37,7 @@ export default function CardManagementScreen({ setCurrentView }) {
         const shop_id = localStorage.getItem('shopid'); // Assuming shop_id is stored in localStorage
         console.log('Shop ID from localStorage:', shop_id);
         // 2. Fetch shop balance using shop_id
-        const balanceRes = await fetch(`http://localhost:8000/balance/${shop_id}`);
+        const balanceRes = await fetch(`https://bingoapi-qtai.onrender.com/balance/${shop_id}`);
         if (!balanceRes.ok) throw new Error('Failed to fetch balance');
         const { balance } = await balanceRes.json();
 
@@ -77,7 +77,7 @@ export default function CardManagementScreen({ setCurrentView }) {
       const shopId = localStorage.getItem('shopid'); // Assuming shop_id is stored in localStorage
 
       // 2. Start the game and store in Firebase
-      const res = await fetch("http://127.0.0.1:8000/startgame", {
+      const res = await fetch("https://bingoapi-qtai.onrender.com/startgame", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
