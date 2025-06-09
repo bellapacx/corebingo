@@ -62,6 +62,9 @@ export default function DashboardScreen({
   const [isRunning, setIsRunning] = useState(false);
   const [winningCards, setWinningCards] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [manualCardId, setManualCardId] = useState('');
+  const [mode, setMode] = useState('auto');
+
 
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
@@ -158,7 +161,7 @@ export default function DashboardScreen({
       grid.push([]);
       for (let j = 0; j < 5; j++) {
         grid[i].push(card[columns[j]][i]);
-      }
+      }const [mode, setMode] = useState('auto');
     }
     return grid;
   };
@@ -227,6 +230,7 @@ export default function DashboardScreen({
 
  // Main win checking function
 const checkWin = async () => {
+  if (winningMode === 'manual') return;
   if (!calledNumbers.length) return;
   if (winningCards.length > 0) return;
   
@@ -288,6 +292,73 @@ const checkWin = async () => {
     }
   }
 };
+//manual check function
+const handleManualCheck = async () => {
+  if (!manualCardId) {
+    alert("Please enter a Card ID.");
+    return;
+  }
+
+  if (!calledNumbers.length) {
+    alert("No called numbers yet. Cannot check.");
+    return;
+  }
+
+ const normalizedManualId = Number(manualCardId.trim());
+
+ const selectedCardsData = bingoCardsData.filter(card => selectedCards.includes(card.card_id));
+const card = selectedCardsData.find(c => c.card_id === normalizedManualId);
+
+if (!card) {
+  alert("Card ID not found in selected cards.");
+  return;
+}
+
+
+  const currentCalledNumbersSet = new Set(calledNumbers);
+  const cardGrid = getCardGrid(card);
+  let isWinner = false;
+
+  switch (winningPattern) {
+    case '1 Line':
+      isWinner = checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1;
+      break;
+    case '2 Lines':
+      isWinner = checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2;
+      break;
+    case 'Full House':
+      isWinner = checkFullHouseWin(cardGrid, currentCalledNumbersSet);
+      break;
+    default:
+      alert("Invalid winning pattern.");
+      return;
+  }
+
+  if (isWinner) {
+    console.log(`Manual winner found: Card ID ${manualCardId}`);
+
+    try {
+      const response = await submitWinning({
+        cardId: manualCardId,
+        roundId,   // make sure roundId is defined in your component scope
+        shopId,    // make sure shopId is defined as well
+        prize,     // prize should also be defined properly
+      });
+      console.log('Manual winning submission response:', response);
+      
+      setIsRunning(false);
+      setWinningCards([normalizedManualId]);
+      setIsModalOpen(true);
+      window.speechSynthesis.cancel();
+    } catch (error) {
+      console.error('Error submitting manual winning:', error);
+      alert('Failed to submit manual winning.');
+    }
+  } else {
+    alert("This card is NOT a winner based on current numbers.");
+  }
+};
+
 
   const callNextNumber = () => {
     const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
@@ -402,6 +473,47 @@ const checkWin = async () => {
                 ))}
             </div>
           </div>
+          <div className="mt-6 mb-2 p-4 border border-white/20 rounded-md bg-white/5 max-w-md w-full" style={{ minWidth: 0 }}>
+  <div className="mb-4 flex items-center gap-6 text-white font-medium">
+    <label className="flex items-center gap-2 cursor-pointer select-none">
+      <input
+        type="radio"
+        checked={mode === 'auto'}
+        onChange={() => setMode('auto')}
+        className="form-radio text-yellow-400"
+      />
+      Auto
+    </label>
+    <label className="flex items-center gap-2 cursor-pointer select-none">
+      <input
+        type="radio"
+        checked={mode === 'manual'}
+        onChange={() => setMode('manual')}
+        className="form-radio text-yellow-400"
+      />
+      Manual
+    </label>
+  </div>
+
+  {mode === 'manual' && (
+    <div className="flex flex-col sm:flex-row items-center gap-3">
+      <input
+        type="text"
+        placeholder="Enter Card ID"
+        value={manualCardId}
+        onChange={(e) => setManualCardId(e.target.value)}
+        className="flex-grow w-full sm:w-auto bg-transparent border border-white/40 text-white placeholder-white/70 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 min-w-0"
+      />
+      <button
+        onClick={handleManualCheck}
+        className="w-full sm:w-auto bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-semibold px-4 py-2 rounded transition min-w-[80px]"
+      >
+        Check
+      </button>
+    </div>
+  )}
+</div>
+
 
           <div className="grid grid-cols-2 gap-4 mt-6">
             <button

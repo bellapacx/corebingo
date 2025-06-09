@@ -16,7 +16,7 @@ export default function CardManagementScreen({ setCurrentView }) {
   const [balance, setBalance] = useState(0); // initially 0 // This should ideally come from a prop or context
   const [isLoading, setIsLoading] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-
+  const [blurred, setBlurred] = useState(false);
   // Logout function
   const handleLogout = () => {
     localStorage.clear();
@@ -160,18 +160,33 @@ export default function CardManagementScreen({ setCurrentView }) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-white/70">Commission</label>
-          <select
-            value={commission}
-            onChange={(e) => setCommission(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          >
-            <option className="bg-blue-900">5%</option>
-            <option className="bg-blue-900">10%</option>
-            <option className="bg-blue-900">15%</option>
-          </select>
-        </div>
+        <div
+      className={`flex items-center gap-3 p-3 rounded bg-white/10 border border-white/20
+        transition-filter duration-300 ${blurred ? 'filter blur-sm' : 'filter blur-0'}`}
+      style={{ maxWidth: '320px' }}
+    >
+      <div className="flex-1 min-w-0">
+        <label className="block text-sm font-semibold mb-1 text-white/70 truncate">
+          Commission
+        </label>
+        <select
+          value={commission}
+          onChange={(e) => setCommission(e.target.value)}
+          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+          <option className="bg-blue-900">20%</option>
+          <option className="bg-blue-900">30%</option>
+        </select>
+      </div>
+
+      <button
+        onClick={() => setBlurred(!blurred)}
+        className="whitespace-nowrap px-3 py-2 text-sm rounded bg-purple-600 text-white hover:bg-purple-700 transition"
+        type="button"
+      >
+        {blurred ? 'Unblur' : 'Blur'}
+      </button>
+    </div>
 
         <div>
           <label className="block text-sm font-semibold mb-1 text-white/70">Call Interval</label>

@@ -75,36 +75,41 @@ export default function WinningCardsModal({ isOpen, onClose, winningCardIds, all
               const cardCategoryColumns = ['B', 'I', 'N', 'G', 'O']; // For displaying BINGO header
 
               return (
-                <div key={card.card_id} className="bg-white/10 rounded-xl p-4 shadow-inner border border-white/10 flex flex-col items-center">
-                  <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
-                  <div className="grid grid-cols-5 gap-1 mb-2 w-full max-w-xs">
-                    {cardCategoryColumns.map(col => (
-                      <div key={col} className="bg-yellow-500 text-black font-bold p-2 text-center rounded-t-md">
-                        {col}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-5 gap-1 w-full max-w-xs">
-                    {cardCategoryColumns.map((col, colIndex) => (
-                      <React.Fragment key={col}>
-                        {card[col].map((num, rowIndex) => (
-                          <div
-                            key={`${card.card_id}-${col}-${rowIndex}`}
-                            className={`p-1 text-center font-semibold rounded-sm border border-white/10 text-sm
-                              ${num === null
-                                ? 'bg-gray-700 text-white/80' // Free space
-                                : isMarked(num, calledNumbersSet)
-                                  ? 'bg-green-600 text-white animate-pulse' // Marked (called)
-                                  : 'bg-white/5 text-white/60' // Unmarked
-                              }`}
-                          >
-                            {num === null ? 'FREE' : num.toString().padStart(2, '0')}
-                          </div>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
+                <div className="flex flex-col items-center">
+  <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
+{/* BINGO Header Row */}
+<div className="grid grid-cols-5 gap-1 mb-2 w-full max-w-xs">
+  {cardCategoryColumns.map((col) => (
+    <div key={col} className="bg-yellow-500 text-black font-bold p-2 text-center rounded-t-md">
+      {col}
+    </div>
+  ))}
+</div>
+
+{/* 5x5 Number Grid (unchanged, row-major from getCardGrid) */}
+<div className="space-y-1 w-full max-w-xs">
+  {cardGrid.map((row, rowIndex) => (
+    <div key={rowIndex} className="grid grid-cols-5 gap-1">
+      {row.map((num, colIndex) => (
+        <div
+          key={`${card.card_id}-r${rowIndex}-c${colIndex}`}
+          className={`p-1 text-center font-semibold rounded-sm border border-white/10 text-sm
+            ${num === null
+              ? 'bg-gray-700 text-white/80'
+              : isMarked(num, calledNumbersSet)
+                ? 'bg-green-600 text-white animate-pulse'
+                : 'bg-white/5 text-white/60'
+            }`}
+        >
+          {num === null ? 'FREE' : num.toString().padStart(2, '0')}
+        </div>
+      ))}
+    </div>
+  ))}
+</div>
+
+</div>
+
               );
             })}
           </div>
