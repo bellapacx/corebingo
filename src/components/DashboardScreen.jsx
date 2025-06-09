@@ -161,7 +161,7 @@ export default function DashboardScreen({
       grid.push([]);
       for (let j = 0; j < 5; j++) {
         grid[i].push(card[columns[j]][i]);
-      }const [mode, setMode] = useState('auto');
+      };
     }
     return grid;
   };
@@ -230,7 +230,7 @@ export default function DashboardScreen({
 
  // Main win checking function
 const checkWin = async () => {
-  if (winningMode === 'manual') return;
+  if (mode === 'manual') return;
   if (!calledNumbers.length) return;
   if (winningCards.length > 0) return;
   
