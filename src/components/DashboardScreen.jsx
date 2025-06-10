@@ -421,7 +421,7 @@ if (!card) {
       {/* Header */}
       <div className="flex justify-between items-center mb-8 border-b border-white/20 pb-4">
         <h1 className="text-4xl font-extrabold text-yellow-300 drop-shadow-lg tracking-wide">
-          HaloBingo 
+          HaloBingo
         </h1>
         <div className="flex items-center space-x-6">
           <div className="text-white/80 font-medium text-xl flex items-center">
