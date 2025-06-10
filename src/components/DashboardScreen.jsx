@@ -512,41 +512,73 @@ if (!card) {
       </button>
     </div>
   )}
-</div>
-
-
+</div>   
           <div className="grid grid-cols-2 gap-4 mt-6">
-  <button
-    onClick={togglePlayPause}
-    className={`flex items-center justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
-      isRunning
-        ? 'bg-red-600 hover:bg-red-700 text-white' // Keep original behavior for play/pause
-        : 'bg-green-600 hover:bg-green-700 text-white'
-    }`}
-  >
-    {isRunning ? (
-      <Pause size={20} className="mr-2" />
-    ) : (
-      <Play size={20} className="mr-2" />
-    )}
-    {isRunning ? 'Pause' : 'Start/Resume'}
-  </button>
-  <button
-    onClick={restartGame}
-    className="flex items-center justify-center bg-black hover:bg-gray-800 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
-  >
-    <RotateCcw size={20} className="mr-2" />
-    Restart
-  </button>
-  <button
-    onClick={requestFullScreen}
-    className="col-span-2 flex items-center justify-center bg-black hover:bg-gray-800 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
-  >
-    <Maximize2 size={20} className="mr-2" />
-    Fullscreen
-  </button>
-</div>
 
+            <button
+
+              onClick={togglePlayPause}
+
+              className={`flex items-center justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
+
+                isRunning
+
+                  ? 'bg-red-600 hover:bg-red-700 text-white'
+
+                  : 'bg-green-600 hover:bg-green-700 text-white'
+
+              }`}
+
+            >
+
+              {isRunning ? (
+
+                <Pause size={20} className="mr-2" />
+
+              ) : (
+
+                <Play size={20} className="mr-2" />
+
+              )}
+
+              {isRunning ? 'Pause' : 'Start/Resume'}
+
+            </button>
+
+            <button
+
+              onClick={restartGame}
+
+              className="flex items-center justify-center bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
+
+            >
+
+              <RotateCcw size={20} className="mr-2" />
+
+              Restart
+
+            </button>
+
+            <button
+
+              onClick={requestFullScreen}
+
+              className="col-span-2 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
+
+            >
+
+              <Maximize2 size={20} className="mr-2" />
+
+              Fullscreen
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+          
         {/* Main Grid for Bingo Numbers - 5 Rows, 16 Columns */}
         <div className="flex-1 p-6 rounded-2xl bg-white/5 backdrop-blur-md shadow-xl border border-white/10 overflow-y-auto scrollbar-hide">
           <div className="grid grid-cols-16 gap-x-2 gap-y-2 text-center font-bold text-white text-base">
