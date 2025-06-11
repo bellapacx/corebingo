@@ -162,7 +162,7 @@ export default function CardManagementScreen({ setCurrentView }) {
 
         <div
       className={`flex items-center gap-3 p-3 rounded bg-white/10 border border-white/20
-        transition-filter duration-300 ${blurred ? 'filter blur-sm' : 'filter blur-0'}`}
+        transition-filter duration-300 ${!blurred ? 'filter blur-sm' : 'filter blur-0'}`}
       style={{ maxWidth: '320px' }}
     >
       <div className="flex-1 min-w-0">
@@ -180,7 +180,7 @@ export default function CardManagementScreen({ setCurrentView }) {
       </div>
 
       <button
-        onClick={() => setBlurred(!blurred)}
+        onClick={() => setBlurred(blurred)}
         className="whitespace-nowrap px-3 py-2 text-sm rounded bg-purple-600 text-white hover:bg-purple-700 transition"
         type="button"
       >
