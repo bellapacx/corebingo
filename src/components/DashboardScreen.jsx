@@ -519,7 +519,7 @@ if (!card) {
 
               onClick={togglePlayPause}
 
-              className={`flex items-center bg-blue justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
+              className={`flex items-center bg-blue-600 justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
 
                 isRunning
 
