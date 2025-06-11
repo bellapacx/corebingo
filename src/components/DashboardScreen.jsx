@@ -421,7 +421,7 @@ if (!card) {
       {/* Header */}
       <div className="flex justify-between items-center mb-8 border-b border-white/20 pb-4">
         <h1 className="text-4xl font-extrabold text-yellow-300 drop-shadow-lg tracking-wide">
-          Home Bingo 
+          HaloBingo 
         </h1>
         <div className="flex items-center space-x-6">
           <div className="text-white/80 font-medium text-xl flex items-center">
@@ -519,7 +519,7 @@ if (!card) {
 
               onClick={togglePlayPause}
 
-              className={`flex items-center justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
+              className={`flex items-center bg-blue justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
 
                 isRunning
 
