@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { XCircle } from 'react-feather';
 
 // Helper functions (copied from DashboardScreen for reusability in modal)
@@ -44,12 +44,28 @@ const isMarked = (num, calledNumbersSet) => {
   return num === null || calledNumbersSet.has(num);
 };
 
+export default function WinningCardsModal({
+  isOpen,
+  onClose,
+  winningCardIds,
+  allBingoCards,
+  calledNumbersSet,
+  status = 'won',
+}) {
+  const [checkedFailedCards, setCheckedFailedCards] = useState([]);
 
-export default function WinningCardsModal({ isOpen, onClose, winningCardIds, allBingoCards, calledNumbersSet, status = 'won', }) {
   if (!isOpen) return null;
 
   // Filter the allBingoCards data to get the actual card objects for the winning IDs
   const actualWinningCards = allBingoCards.filter(card => winningCardIds.includes(card.card_id));
+
+  const isCardChecked = (cardId) => checkedFailedCards.includes(cardId);
+
+  const handleMarkAsChecked = (cardId) => {
+    if (!isCardChecked(cardId)) {
+      setCheckedFailedCards(prev => [...prev, cardId]);
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
@@ -62,57 +78,88 @@ export default function WinningCardsModal({ isOpen, onClose, winningCardIds, all
           <XCircle size={28} />
         </button>
 
-        <h2 className={`text-4xl font-extrabold mb-6 text-center drop-shadow-lg ${
-  status === 'won' ? 'text-yellow-300' : 'text-red-400'
-}`}>
-  {status === 'won' ? '🎉 Winning' : '❌ Failed'} Card{actualWinningCards.length > 1 ? 's' : ''}!
-</h2>
-
+        <h2
+          className={`text-4xl font-extrabold mb-6 text-center drop-shadow-lg ${
+            status === 'won' ? 'text-yellow-300' : 'text-red-400'
+          }`}
+        >
+          {status === 'won' ? '🎉 Winning' : '❌ Failed'} Card
+          {actualWinningCards.length > 1 ? 's' : ''}!
+        </h2>
 
         {actualWinningCards.length === 0 ? (
           <p className="text-center text-xl text-white/80">No winning cards to display yet.</p>
         ) : (
-          <div className="flex justify-center items-center"> {/* Changed from grid to flex for centering */}
+          <div className="flex justify-center items-center flex-wrap gap-6">
             {actualWinningCards.map((card) => {
               const cardGrid = getCardGrid(card);
               const cardCategoryColumns = ['B', 'I', 'N', 'G', 'O']; // For displaying BINGO header
 
+              // For failed cards, check if already checked
+              if (status === 'failed' && isCardChecked(card.card_id)) {
+                return (
+                  <div
+                    key={card.card_id}
+                    className="flex flex-col items-center max-w-xs p-4 bg-red-900 rounded-lg shadow-lg"
+                  >
+                    <h3 className="text-2xl font-bold text-red-400 mb-4">Card ID: {card.card_id}</h3>
+                    <p className="text-red-400 font-semibold mb-4">This card is already checked.</p>
+                  </div>
+                );
+              }
+
               return (
-                <div className="flex flex-col items-center">
-  <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
-{/* BINGO Header Row */}
-<div className="grid grid-cols-5 gap-1 mb-2 w-full max-w-xs">
-  {cardCategoryColumns.map((col) => (
-    <div key={col} className="bg-yellow-500 text-black font-bold p-2 text-center rounded-t-md">
-      {col}
-    </div>
-  ))}
-</div>
+                <div
+                  key={card.card_id}
+                  className="flex flex-col items-center max-w-xs p-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg shadow-lg"
+                >
+                  <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
 
-{/* 5x5 Number Grid (unchanged, row-major from getCardGrid) */}
-<div className="space-y-1 w-full max-w-xs">
-  {cardGrid.map((row, rowIndex) => (
-    <div key={rowIndex} className="grid grid-cols-5 gap-1">
-      {row.map((num, colIndex) => (
-        <div
-          key={`${card.card_id}-r${rowIndex}-c${colIndex}`}
-          className={`p-1 text-center font-semibold rounded-sm border border-white/10 text-sm
-            ${num === null
-              ? 'bg-gray-700 text-white/80'
-              : isMarked(num, calledNumbersSet)
-                ? 'bg-green-600 text-white animate-pulse'
-                : 'bg-white/5 text-white/60'
-            }`}
-        >
-          {num === null ? 'FREE' : num.toString().padStart(2, '0')}
-        </div>
-      ))}
-    </div>
-  ))}
-</div>
+                  {/* Show Mark as Checked button only for failed cards NOT checked */}
+                  {status === 'failed' && !isCardChecked(card.card_id) && (
+                    <button
+                      onClick={() => handleMarkAsChecked(card.card_id)}
+                      className="mb-4 px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white font-semibold transition"
+                    >
+                      Mark as Checked
+                    </button>
+                  )}
 
-</div>
+                  {/* BINGO Header Row */}
+                  <div className="grid grid-cols-5 gap-1 mb-2 w-full max-w-xs">
+                    {cardCategoryColumns.map((col) => (
+                      <div
+                        key={col}
+                        className="bg-yellow-500 text-black font-bold p-2 text-center rounded-t-md"
+                      >
+                        {col}
+                      </div>
+                    ))}
+                  </div>
 
+                  {/* 5x5 Number Grid */}
+                  <div className="space-y-1 w-full max-w-xs">
+                    {cardGrid.map((row, rowIndex) => (
+                      <div key={rowIndex} className="grid grid-cols-5 gap-1">
+                        {row.map((num, colIndex) => (
+                          <div
+                            key={`${card.card_id}-r${rowIndex}-c${colIndex}`}
+                            className={`p-1 text-center font-semibold rounded-sm border border-white/10 text-sm
+                            ${
+                              num === null
+                                ? 'bg-gray-700 text-white/80'
+                                : isMarked(num, calledNumbersSet)
+                                ? 'bg-green-600 text-white animate-pulse'
+                                : 'bg-white/5 text-white/60'
+                            }`}
+                          >
+                            {num === null ? 'FREE' : num.toString().padStart(2, '0')}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               );
             })}
           </div>
