@@ -60,7 +60,7 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
         {/* Left side - Branding / Illustration */}
         <div className="hidden md:flex flex-col justify-center items-center flex-1 bg-gradient-to-tr from-blue-600 to-purple-700 p-12">
           <h1 className="text-white text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-300 to-white">
-            Bingo Pro
+            Halo Bingo
           </h1>
           <p className="text-white/80 text-lg max-w-xs text-center">
             Advanced Shop Management Suite<br />Control your shop, manage games & cards easily.
