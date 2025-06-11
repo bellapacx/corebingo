@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ModalReport from './ModalReport';
-
+import CardModal from './showCard';
 const TOTAL_CARDS = 200;
 // Adjusted default card color to better suit the dark, sophisticated theme
 const DEFAULT_COLOR = '#3B82F6'; // A shade of blue that would fit the gradient
@@ -17,6 +17,8 @@ export default function CardManagementScreen({ setCurrentView }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [blurred, setBlurred] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState(null);
   // Logout function
   const handleLogout = () => {
     localStorage.clear();
@@ -25,11 +27,23 @@ export default function CardManagementScreen({ setCurrentView }) {
   };
 
   const toggleCard = (num) => {
-    setSelectedCards((prev) =>
-      prev.includes(num) ? prev.filter((n) => n !== num) : [...prev, num]
-    );
-  };
+  setSelectedCards((prev) => {
+    const isAlreadySelected = prev.includes(num);
+    if (!isAlreadySelected) {
+      setSelectedCardId(num); // open modal with this card
+      setIsModalOpen(true);
+      return [...prev, num];
+    } else {
+      return prev.filter((n) => n !== num); // just deselect
+    }
+  });
+};
 
+  // Function to handle closing the modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedCardId(null);
+  };
   useEffect(() => {
     const fetchBalance = async () => {
       try {
@@ -279,6 +293,12 @@ export default function CardManagementScreen({ setCurrentView }) {
         onClose={() => setShowReportModal(false)}
         shopId={shopId}
       />
+      <CardModal
+  isOpen={isModalOpen}
+  onClose={handleCloseModal}
+  winningCardIds={selectedCardId ? [selectedCardId] : []}
+/>
+
     </div>
   );
 }
