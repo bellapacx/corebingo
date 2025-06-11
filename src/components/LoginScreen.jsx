@@ -60,7 +60,7 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
         {/* Left side - Branding / Illustration */}
         <div className="hidden md:flex flex-col justify-center items-center flex-1 bg-gradient-to-tr from-blue-600 to-purple-700 p-12">
           <h1 className="text-white text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-300 to-white">
-            Bingo Pro
+            Halo Bingo
           </h1>
           <p className="text-white/80 text-lg max-w-xs text-center">
             Advanced Shop Management Suite<br />Control your shop, manage games & cards easily.
@@ -71,7 +71,7 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
         <form onSubmit={handleLogin} className="flex-1 p-10 md:p-16">
           <div className="text-center mb-12">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent text-4xl font-extrabold mb-4 md:hidden">
-              Sebez Bingo Pro
+              Halo Bingo
             </div>
             <p className="text-white/70 text-lg md:text-xl">
               Advanced Shop Management Suite
