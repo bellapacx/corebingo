@@ -356,8 +356,9 @@ if (!card) {
     }
   } else {
     setStatus("failed"); // 👈 set status
-  setIsModalOpen(true);
-    alert("This card is NOT a winner based on current numbers.");
+    setWinningCards([normalizedManualId]);
+    setIsModalOpen(true);
+    
   }
 };
 
