@@ -95,14 +95,13 @@ export default function WinningCardsModal({
               const cardGrid = getCardGrid(card);
               const cardCategoryColumns = ['B', 'I', 'N', 'G', 'O']; // For displaying BINGO header
 
-              // For failed cards, check if already checked
               if (status === 'failed' && isCardChecked(card.card_id)) {
                 return (
                   <div
                     key={card.card_id}
-                    className="flex flex-col items-center max-w-xs p-4 bg-red-900 rounded-lg shadow-lg"
+                    className="flex flex-col items-center"
                   >
-                    <h3 className="text-2xl font-bold text-red-400 mb-4">Card ID: {card.card_id}</h3>
+                    <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
                     <p className="text-red-400 font-semibold mb-4">This card is already checked.</p>
                   </div>
                 );
@@ -111,7 +110,7 @@ export default function WinningCardsModal({
               return (
                 <div
                   key={card.card_id}
-                  className="flex flex-col items-center max-w-xs p-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg shadow-lg"
+                  className="flex flex-col items-center"
                 >
                   <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
 
