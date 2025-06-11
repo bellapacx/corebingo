@@ -523,9 +523,9 @@ if (!card) {
 
                 isRunning
 
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
+                  ? 'bg-red-600 text-white'
 
-                  : 'bg-green-600 hover:bg-green-700 text-white'
+                  : 'bg-blue-600 text-white'
 
               }`}
 
@@ -549,7 +549,7 @@ if (!card) {
 
               onClick={restartGame}
 
-              className="flex items-center justify-center bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
+              className="flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
 
             >
 
@@ -563,7 +563,7 @@ if (!card) {
 
               onClick={requestFullScreen}
 
-              className="col-span-2 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
+              className="col-span-2 flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
 
             >
 
