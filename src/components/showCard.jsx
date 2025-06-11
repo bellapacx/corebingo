@@ -22,7 +22,7 @@ export default function SimpleCardsModal({ isOpen, onClose, winningCardIds }) {
   const cardCategoryColumns = ['B', 'I', 'N', 'G', 'O'];
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4"
+    <div className="fixed inset-0 flex items-start justify-start z-50 p-4"
     onClick={onClose} // 👈 Clicking outside modal triggers close
     >
       <div className="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 rounded-2xl shadow-2xl border border-white/20 p-8 w-full max-w-md max-h-[90vh] overflow-y-auto relative text-white"
