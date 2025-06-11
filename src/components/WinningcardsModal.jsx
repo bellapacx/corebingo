@@ -45,7 +45,7 @@ const isMarked = (num, calledNumbersSet) => {
 };
 
 
-export default function WinningCardsModal({ isOpen, onClose, winningCardIds, allBingoCards, calledNumbersSet }) {
+export default function WinningCardsModal({ isOpen, onClose, winningCardIds, allBingoCards, calledNumbersSet, status = 'won', }) {
   if (!isOpen) return null;
 
   // Filter the allBingoCards data to get the actual card objects for the winning IDs
@@ -62,9 +62,12 @@ export default function WinningCardsModal({ isOpen, onClose, winningCardIds, all
           <XCircle size={28} />
         </button>
 
-        <h2 className="text-4xl font-extrabold text-yellow-300 mb-6 text-center drop-shadow-lg">
-          🎉 Winning Card{actualWinningCards.length > 1 ? 's' : ''}!
-        </h2>
+        <h2 className={`text-4xl font-extrabold mb-6 text-center drop-shadow-lg ${
+  status === 'won' ? 'text-yellow-300' : 'text-red-400'
+}`}>
+  {status === 'won' ? '🎉 Winning' : '❌ Failed'} Card{actualWinningCards.length > 1 ? 's' : ''}!
+</h2>
+
 
         {actualWinningCards.length === 0 ? (
           <p className="text-center text-xl text-white/80">No winning cards to display yet.</p>

@@ -64,7 +64,7 @@ export default function DashboardScreen({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [manualCardId, setManualCardId] = useState('');
   const [mode, setMode] = useState('auto');
-
+  const [status, setStatus] = useState("won");
 
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
@@ -345,7 +345,7 @@ if (!card) {
         prize,     // prize should also be defined properly
       });
       console.log('Manual winning submission response:', response);
-      
+      setStatus("won");
       setIsRunning(false);
       setWinningCards([normalizedManualId]);
       setIsModalOpen(true);
@@ -355,6 +355,8 @@ if (!card) {
       alert('Failed to submit manual winning.');
     }
   } else {
+    setStatus("failed"); // 👈 set status
+  setIsModalOpen(true);
     alert("This card is NOT a winner based on current numbers.");
   }
 };
@@ -624,6 +626,7 @@ if (!card) {
         winningCardIds={winningCards}
         allBingoCards={bingoCardsData}
         calledNumbersSet={new Set(calledNumbers)}
+        status={status}
       />
     </div>
   );
