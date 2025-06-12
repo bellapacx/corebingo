@@ -12,7 +12,7 @@ export default function CardManagementScreen({ setCurrentView }) {
   const [commission, setCommission] = useState('10%'); // e.g., "10%"
   const [interval, setInterval] = useState('3 sec'); // e.g., "3 sec"
   const [pattern, setPattern] = useState('1 Line');
-  const [language, setLanguage] = useState('English');
+  const [language, setLanguage] = useState('Amharic'); // Default language
   const [balance, setBalance] = useState(0); // initially 0 // This should ideally come from a prop or context
   const [isLoading, setIsLoading] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -234,8 +234,7 @@ export default function CardManagementScreen({ setCurrentView }) {
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          >
-            
+          >      
             <option className="bg-blue-900">Amharic</option>
             <option className="bg-blue-900">English</option>
           </select>
