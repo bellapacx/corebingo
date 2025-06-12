@@ -71,7 +71,7 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
         <form onSubmit={handleLogin} className="flex-1 p-10 md:p-16">
           <div className="text-center mb-12">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent text-4xl font-extrabold mb-4 md:hidden">
-              Sebez Bingo Pro
+              Halo Bingo
             </div>
             <p className="text-white/70 text-lg md:text-xl">
               Advanced Shop Management Suite

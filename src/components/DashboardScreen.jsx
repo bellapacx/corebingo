@@ -69,8 +69,18 @@ export default function DashboardScreen({
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
   const [availableVoices, setAvailableVoices] = useState([]);
-  
-
+  const audioRef = useRef(null);
+  const playSoundForCall = (category, number) => {
+  const audioPath = `/amharicaudio/${category}_${number}.wav`;
+  if (audioRef.current) {
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+  }
+  audioRef.current = new Audio(audioPath);
+  audioRef.current.play().catch((err) => {
+    console.warn("Audio play error:", err);
+  });
+};
   // --- Speech Synthesis Setup ---
   useEffect(() => {
     // Initialize SpeechSynthesisUtterance only once
@@ -103,54 +113,40 @@ export default function DashboardScreen({
 
   // Effect to speak the current number when it changes
   useEffect(() => {
-    if (currentCall !== null && speechUtteranceRef.current && availableVoices.length > 0) {
-      window.speechSynthesis.cancel(); // Stop any ongoing speech to avoid overlap
+  if (currentCall !== null) {
+    const category = getCategory(currentCall);
 
-      const category = getCategory(currentCall);
-      // Format the text to be spoken: "B. one." or "N. thirty-five."
-      let textToSpeak;
-      if (language === 'Amharic') {
-        textToSpeak = `${category}. ${getAmharicNumber(currentCall)}.`;
-      } else {
-        textToSpeak = `${category}. ${currentCall}.`;
-      }
+    if (language === 'Amharic') {
+      playSoundForCall(category, currentCall);
+    } else if (speechUtteranceRef.current && availableVoices.length > 0) {
+      window.speechSynthesis.cancel();
 
+      const textToSpeak = `${category}. ${currentCall}.`;
       speechUtteranceRef.current.text = textToSpeak;
 
-      // Determine the desired language prefix/tag based on your prop
-      const voiceLangPrefix = (() => {
-        switch (language) {
-          case 'Amharic': return 'am'; // For Amharic (e.g., 'am-ET')
-          case 'ti': return 'ti'; // For Tigrigna (e.g., 'ti-ET' or 'ti-ER')
-          case 'en':
-          default: return 'en'; // Default to English
-        }
-      })();
-
-      // Try to find a suitable voice that starts with the desired language prefix
-      const selectedVoice = availableVoices.find(voice =>
-        voice.lang.startsWith(voiceLangPrefix) &&
-        (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.default) // Prioritize common vendors or default voices
+      const voiceLangPrefix = language === 'ti' ? 'ti' : 'en';
+      const selectedVoice = availableVoices.find(
+        (voice) =>
+          voice.lang.startsWith(voiceLangPrefix) &&
+          (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.default)
       );
 
       if (selectedVoice) {
         speechUtteranceRef.current.voice = selectedVoice;
-        speechUtteranceRef.current.lang = selectedVoice.lang; // Use the exact lang of the found voice
+        speechUtteranceRef.current.lang = selectedVoice.lang;
       } else {
-        // Fallback: If no specific voice for the requested language is found, use English.
         speechUtteranceRef.current.lang = 'en-US';
-        console.warn(`No specific voice found for language '${language}' (${voiceLangPrefix}). Falling back to 'en-US'.`);
       }
 
       try {
         window.speechSynthesis.speak(speechUtteranceRef.current);
       } catch (e) {
-        console.error("Speech synthesis failed:", e);
-        // This might happen if speech is not yet "activated" by user interaction
-        // or if there are truly no voices available.
+        console.error('Speech synthesis failed:', e);
       }
     }
-  }, [currentCall, language, availableVoices]); // Dependencies for this effect
+  }
+}, [currentCall, language, availableVoices]);
+// Dependencies for this effect
 
 
   // Helper function to convert card object to a 5x5 grid array (handling null for free space)
