@@ -235,8 +235,9 @@ export default function CardManagementScreen({ setCurrentView }) {
             onChange={(e) => setLanguage(e.target.value)}
             className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
           >
-            <option className="bg-blue-900">English</option>
+            
             <option className="bg-blue-900">Amharic</option>
+            <option className="bg-blue-900">English</option>
           </select>
         </div>
       </aside>
