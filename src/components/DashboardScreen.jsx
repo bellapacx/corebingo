@@ -71,7 +71,7 @@ export default function DashboardScreen({
   const [availableVoices, setAvailableVoices] = useState([]);
   const audioRef = useRef(null);
   const playSoundForCall = (category, number) => {
-  const audioPath = `/amharicaudio/${category}_${number}.wav`;
+  const audioPath = `/amharicaudio/${category.toLowerCase()}_${number}.wav`;
   if (audioRef.current) {
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
