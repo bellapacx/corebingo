@@ -82,6 +82,7 @@ export default function CardManagementScreen({ setCurrentView }) {
   };
 
   const startGame = async () => {
+    setIsLoading(true);
     const prize = calculatePrize();
     const parsedInterval = parseInt(interval.split(' ')[0]) * 1000;
 
@@ -264,7 +265,15 @@ export default function CardManagementScreen({ setCurrentView }) {
                 : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600'
             }`}
           >
-            Start Bingo Game
+            {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                  Starting...
+                </div>
+              ) : (
+                'Start Bingo Game'
+              )}
+            
           </button>
         </div>
         <div className="grid grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-3">
