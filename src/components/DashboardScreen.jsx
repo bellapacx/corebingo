@@ -449,7 +449,7 @@ const handleManualCheck = async () => {
 
 
 const checkWinA = () => {
-  if (!calledNumbers.length) return;
+ 
 
   const currentCalledNumbersSet = new Set(calledNumbers);
   const cardsToCheck = bingoCardsData.filter(card =>
@@ -458,10 +458,6 @@ const checkWinA = () => {
 
   for (const card of cardsToCheck) {
     const cardId = card.card_id;
-
-    if (winningCards.includes(cardId) || lockedCards.includes(cardId)) {
-      continue; // Skip winners and already locked
-    }
 
     const cardGrid = getCardGrid(card);
     let isWinner = false;
