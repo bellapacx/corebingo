@@ -489,11 +489,11 @@ const checkWinA = () => {
     }
   // Check if this card has already won
 if (isWinner) {
-   wincardid= card.card_id;
+   wincardid = card.card_id;
   if (passedCards.includes(wincardid)) {
     // Second time it's winning — lock it
     console.log(`🔒 Card ${wincardid} locked (won again after being passed)`);
-    setLockedCards(prev => [...prev, card.card_id]);
+    setLockedCards(prev => [...prev, wincardid]);
     break
   } else {
     // First time it's winning — pass it
