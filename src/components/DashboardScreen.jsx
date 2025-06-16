@@ -516,6 +516,9 @@ const checkWinA = async () => {
     // Check for wins after state updates have potentially rendered the new number
     // using setTimeout(0) or by making checkWin part of an effect for calledNumbers.
     // For simplicity, we keep setTimeout(0) here.
+    // Mark previous calledNumbers count — used to disqualify late wins
+  setLastWinCheckNumberCount(calledNumbers.length + 1);
+
     // Check for winners
   setTimeout(() => {
     checkWin();
