@@ -65,7 +65,8 @@ export default function DashboardScreen({
   const [manualCardId, setManualCardId] = useState('');
   const [mode, setMode] = useState('auto');
   const [status, setStatus] = useState("won");
-
+const [lastWinCheckNumberCount, setLastWinCheckNumberCount] = useState(0);
+const [passedCards, setPassedCards] = useState([]);
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
   const [availableVoices, setAvailableVoices] = useState([]);
@@ -451,6 +452,57 @@ if (!card) {
   }
 };
 
+const checkWinA = async () => {
+  
+  if (!calledNumbers.length) return;
+
+  const currentCalledNumbersSet = new Set(calledNumbers);
+  const cardsToCheck = bingoCardsData.filter(card => selectedCards.includes(card.card_id));
+  let declaredWinnerCardId = null;
+
+  for (const card of cardsToCheck) {
+    if (winningCards.includes(card.card_id) || passedCards.includes(card.card_id)) {
+      continue;
+    }
+
+    const cardGrid = getCardGrid(card);
+    let isWinner = false;
+
+    switch (winningPattern) {
+      case '1 Line':
+        if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) isWinner = true;
+        break;
+      case '2 Lines':
+        if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) isWinner = true;
+        break;
+      case 'Full House':
+        if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
+        break;
+      case 'Four Corners':
+        if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
+        break;
+      case 'All':
+        if (
+          checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 &&
+          checkFullHouseWin(cardGrid, currentCalledNumbersSet) &&
+          checkFourCornersWin(cardGrid, currentCalledNumbersSet)
+        ) isWinner = true;
+        break;
+    }
+
+    if (isWinner) {
+      // Too late — another number already called after win condition met
+      if (calledNumbers.length > lastWinCheckNumberCount) {
+        console.log(`Card ${card.card_id} passed (called too late)`);
+        setPassedCards(prev => [...prev, card.card_id]);
+        continue;
+      }
+
+      declaredWinnerCardId = card.card_id;
+      break;
+    }
+  }
+};
 
   const callNextNumber = () => {
     const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
@@ -464,7 +516,11 @@ if (!card) {
     // Check for wins after state updates have potentially rendered the new number
     // using setTimeout(0) or by making checkWin part of an effect for calledNumbers.
     // For simplicity, we keep setTimeout(0) here.
-    setTimeout(checkWin, 0);
+    // Check for winners
+  setTimeout(() => {
+    checkWin();
+    checkWinA(); // separate logic to track passed cards
+  }, 0);
   };
 
   useEffect(() => {
