@@ -67,6 +67,7 @@ export default function DashboardScreen({
   const [status, setStatus] = useState("won");
 const [lastWinCheckNumberCount, setLastWinCheckNumberCount] = useState(0);
 const [passedCards, setPassedCards] = useState([]);
+const [lockedCards, setLockedCards] = useState([]);
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
   const [availableVoices, setAvailableVoices] = useState([]);
@@ -371,7 +372,7 @@ const handleManualCheck = async () => {
   const normalizedManualId = Number(manualCardId.trim());
 
   // 🔔 Check if this card already passed (missed the win opportunity)
-  if (passedCards.includes(normalizedManualId)) {
+  if (lockedCards.includes(normalizedManualId)) {
     alert(`Card ${normalizedManualId} has already passed. It cannot win anymore.`);
     return;
   }
@@ -447,17 +448,19 @@ const handleManualCheck = async () => {
 };
 
 
-const checkWinA = async () => {
-  
+const checkWinA = () => {
   if (!calledNumbers.length) return;
 
   const currentCalledNumbersSet = new Set(calledNumbers);
-  const cardsToCheck = bingoCardsData.filter(card => selectedCards.includes(card.card_id));
-  let declaredWinnerCardId = null;
+  const cardsToCheck = bingoCardsData.filter(card =>
+    selectedCards.includes(card.card_id)
+  );
 
   for (const card of cardsToCheck) {
-    if (winningCards.includes(card.card_id) || passedCards.includes(card.card_id)) {
-      continue;
+    const cardId = card.card_id;
+
+    if (winningCards.includes(cardId) || lockedCards.includes(cardId)) {
+      continue; // Skip winners and already locked
     }
 
     const cardGrid = getCardGrid(card);
@@ -486,15 +489,13 @@ const checkWinA = async () => {
     }
 
     if (isWinner) {
-      // Too late — another number already called after win condition met
-      if (calledNumbers.length > lastWinCheckNumberCount) {
-        console.log(`Card ${card.card_id} passed (called too late)`);
-        setPassedCards(prev => [...prev, card.card_id]);
-        continue;
+      if (passedCards.includes(cardId)) {
+        console.log(`🔒 Card ${cardId} locked (win ignored again)`);
+        setLockedCards(prev => [...prev, cardId]);
+      } else if (calledNumbers.length > lastWinCheckNumberCount.current) {
+        console.log(`⚠️ Card ${cardId} passed — number called too late`);
+        setPassedCards(prev => [...prev, cardId]);
       }
-
-      declaredWinnerCardId = card.card_id;
-      break;
     }
   }
 };
