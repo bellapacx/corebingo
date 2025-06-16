@@ -455,7 +455,8 @@ const checkWinA = () => {
   const cardsToCheck = bingoCardsData.filter(card =>
     selectedCards.includes(card.card_id)
   );
-  wincardid = null;
+  const wincardid = null;
+  
   for (const card of cardsToCheck) {
 
     const cardGrid = getCardGrid(card);
