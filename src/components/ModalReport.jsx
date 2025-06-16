@@ -49,6 +49,9 @@ export default function ModalReport({ show, onClose, shopId }) {
           &times;
         </button>
         <h2 className="text-3xl font-extrabold mb-6 text-blue-300 drop-shadow">Reports</h2>
+        <div className="text-lg font-bold text-white bg-white/10 px-4 py-2 rounded shadow">
+    Balance: <span className="text-green-400">jsdfjk</span>
+  </div>
         {/* Date range filter */}
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <label htmlFor="date-from" className="text-white/80 font-semibold">Date from:</label>

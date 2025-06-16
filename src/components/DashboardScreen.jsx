@@ -390,6 +390,11 @@ if (!card) {
         const dummyUtterance = new SpeechSynthesisUtterance(' ');
         window.speechSynthesis.speak(dummyUtterance);
     }
+    // Play sound
+  const audio = new Audio(!isRunning ? "/game/start_game.m4a" : "/game/pause_game.m4a");
+  audio.play().catch((err) => {
+    console.warn("Audio play blocked by browser:", err);
+  });
     setIsRunning((prev) => !prev);
   };
 
