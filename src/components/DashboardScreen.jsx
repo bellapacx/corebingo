@@ -456,7 +456,7 @@ const checkWinA = () => {
     selectedCards.includes(card.card_id)
   );
   const wincardid = null;
-  
+
   for (const card of cardsToCheck) {
 
     const cardGrid = getCardGrid(card);
@@ -490,7 +490,8 @@ const checkWinA = () => {
       break;
     }
 
-   if (isWinner) {
+  }
+  if (isWinner) {
   if (passedCards.includes(wincardid)) {
     // Second time it's winning — lock it
     console.log(`🔒 Card ${wincardid} locked (won again after being passed)`);
@@ -501,8 +502,6 @@ const checkWinA = () => {
     setPassedCards(prev => [...prev, wincardid]);
   }
 }
-
-  }
 };
 
   const callNextNumber = () => {
