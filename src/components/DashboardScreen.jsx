@@ -484,15 +484,18 @@ const checkWinA = () => {
         break;
     }
 
-    if (isWinner) {
-      if (passedCards.includes(cardId)) {
-        console.log(`🔒 Card ${cardId} locked (win ignored again)`);
-        setLockedCards(prev => [...prev, cardId]);
-      } else if (calledNumbers.length > lastWinCheckNumberCount.current) {
-        console.log(`⚠️ Card ${cardId} passed — number called too late`);
-        setPassedCards(prev => [...prev, cardId]);
-      }
-    }
+   if (isWinner) {
+  if (passedCards.includes(card.card_id)) {
+    // Second time it's winning — lock it
+    console.log(`🔒 Card ${card.card_id} locked (won again after being passed)`);
+    setLockedCards(prev => [...prev, card.card_id]);
+  } else {
+    // First time it's winning — pass it
+    console.log(`⚠️ Card ${card.card_id} passed (won too late)`);
+    setPassedCards(prev => [...prev, card.card_id]);
+  }
+}
+
   }
 };
 
