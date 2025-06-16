@@ -450,16 +450,15 @@ const handleManualCheck = async () => {
 
 const checkWinA = () => {
  
-  console.log("Checking for wins with winning pattern:", winningPattern);
+  //console.log("Checking for wins with winning pattern:", winningPattern);
   const currentCalledNumbersSet = new Set(calledNumbers);
   const cardsToCheck = bingoCardsData.filter(card =>
     selectedCards.includes(card.card_id)
   );
-
+  wincardid = null;
   for (const card of cardsToCheck) {
-    const cardId = card.card_id;
 
-    const cardGrid = getCardGrid(cardId);
+    const cardGrid = getCardGrid(card);
     let isWinner = false;
 
     switch (winningPattern) {
@@ -482,17 +481,23 @@ const checkWinA = () => {
           checkFourCornersWin(cardGrid, currentCalledNumbersSet)
         ) isWinner = true;
         break;
+
+      
+    }
+    if (isWinner) {
+      wincardid= card.card_id;
+      break;
     }
 
    if (isWinner) {
-  if (passedCards.includes(card.card_id)) {
+  if (passedCards.includes(wincardid)) {
     // Second time it's winning — lock it
-    console.log(`🔒 Card ${card.card_id} locked (won again after being passed)`);
+    console.log(`🔒 Card ${wincardid} locked (won again after being passed)`);
     setLockedCards(prev => [...prev, card.card_id]);
   } else {
     // First time it's winning — pass it
-    console.log(`⚠️ Card ${card.card_id} passed (won too late)`);
-    setPassedCards(prev => [...prev, card.card_id]);
+    console.log(`⚠️ Card ${wincardid} passed (won too late)`);
+    setPassedCards(prev => [...prev, wincardid]);
   }
 }
 
