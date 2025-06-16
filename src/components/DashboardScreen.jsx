@@ -465,6 +465,7 @@ const checkWinA = () => {
     switch (winningPattern) {
       case '1 Line':
         if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) isWinner = true;
+        console.log(`Checking card ${card.card_id} for 1 Line win: ${isWinner}`);
         break;
       case '2 Lines':
         if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) isWinner = true;
