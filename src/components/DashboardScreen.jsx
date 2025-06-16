@@ -482,6 +482,7 @@ const checkWinA = () => {
           checkFullHouseWin(cardGrid, currentCalledNumbersSet) &&
           checkFourCornersWin(cardGrid, currentCalledNumbersSet)
         ) isWinner = true;
+        console.log(`Checking card ${card.card_id} for 1 Line win: ${isWinner}`);
         break;
 
       
