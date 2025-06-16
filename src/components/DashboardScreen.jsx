@@ -70,17 +70,47 @@ export default function DashboardScreen({
   const speechUtteranceRef = useRef(null);
   const [availableVoices, setAvailableVoices] = useState([]);
   const audioRef = useRef(null);
+  const audioCache = useRef(new Map());
+
+useEffect(() => {
+  const categories = ['b', 'i', 'n', 'g', 'o'];
+
+  for (const cat of categories) {
+    for (let i = 1; i <= 75; i++) {
+      const path = `/voicemale/${cat}_${i}.m4a`;
+      const audio = new Audio(path);
+      audioCache.current.set(path, audio);
+    }
+  }
+
+  console.log("✅ Preloaded all voicemale audio into cache");
+}, []);
+
+  
   const playSoundForCall = (category, number) => {
   const audioPath = `/voicemale/${category.toLowerCase()}_${number}.m4a`;
+
   if (audioRef.current) {
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
   }
-  audioRef.current = new Audio(audioPath);
+
+  const cachedAudio = audioCache.current.get(audioPath);
+  if (cachedAudio) {
+    audioRef.current = cachedAudio;
+  } else {
+    // Fallback: Load on demand (shouldn't happen if cache is correct)
+    const fallback = new Audio(audioPath);
+    audioCache.current.set(audioPath, fallback);
+    audioRef.current = fallback;
+  }
+
+  audioRef.current.currentTime = 0;
   audioRef.current.play().catch((err) => {
-    console.warn("Audio play error:", err);
+    console.warn("🎧 Audio play error:", err);
   });
 };
+
   // --- Speech Synthesis Setup ---
   useEffect(() => {
     // Initialize SpeechSynthesisUtterance only once
