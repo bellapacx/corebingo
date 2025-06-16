@@ -11,7 +11,7 @@ export default function CardManagementScreen({ setCurrentView }) {
   const [bet, setBet] = useState(10);
   const [commission, setCommission] = useState('10%'); // e.g., "10%"
   const [interval, setInterval] = useState('3 sec'); // e.g., "3 sec"
-  const [pattern, setPattern] = useState('1 Line');
+  const [pattern, setPattern] = useState('All'); // e.g., "All"
   const [language, setLanguage] = useState('Amharic'); // Default language
   const [balance, setBalance] = useState(0); // initially 0 // This should ideally come from a prop or context
   const [isLoading, setIsLoading] = useState(false);
@@ -223,6 +223,7 @@ export default function CardManagementScreen({ setCurrentView }) {
             onChange={(e) => setPattern(e.target.value)}
             className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
           >
+            <option className="bg-blue-900">All</option>
             <option className="bg-blue-900">1 Line</option>
             <option className="bg-blue-900">2 Lines</option>
             <option className="bg-blue-900">Full House</option>

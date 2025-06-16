@@ -222,7 +222,17 @@ export default function DashboardScreen({
   const checkFullHouseWin = (grid, calledNumbersSet) => {
     return grid.flat().every(num => isMarked(num, calledNumbersSet));
   };
+// Check for Four Corners win
+const checkFourCornersWin = (grid, calledNumbersSet) => {
+  const corners = [
+    grid[0][0], // top-left
+    grid[0][4], // top-right
+    grid[4][0], // bottom-left
+    grid[4][4]  // bottom-right
+  ];
 
+  return corners.every(num => isMarked(num, calledNumbersSet));
+};
 
  // Main win checking function
 const checkWin = async () => {
@@ -240,25 +250,41 @@ const checkWin = async () => {
     let isWinner = false;
 
     switch (winningPattern) {
-      case '1 Line':
-        if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) {
-          isWinner = true;
-        }
-        break;
-      case '2 Lines':
-        if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) {
-          isWinner = true;
-        }
-        break;
-      case 'Full House':
-        if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) {
-          isWinner = true;
-        }
-        break;
-      default:
-        console.warn(`Unknown winning pattern: ${winningPattern}`);
-        break;
+  case '1 Line':
+    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) {
+      isWinner = true;
     }
+    break;
+  case '2 Lines':
+    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) {
+      isWinner = true;
+    }
+    break;
+  case 'Full House':
+    if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) {
+      isWinner = true;
+    }
+    break;
+  case 'Four Corners':
+    if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) {
+      isWinner = true;
+    }
+    break;
+  case 'All':
+    if (
+      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||     // 1 Line
+      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||     // 2 Lines
+      checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||         // Full House
+      checkFourCornersWin(cardGrid, currentCalledNumbersSet)          // Four Corners
+    ) {
+      isWinner = true;
+    }
+    break;
+  default:
+    console.warn(`Unknown winning pattern: ${winningPattern}`);
+    break;
+}
+
 
     if (isWinner) {
       declaredWinnerCardId = card.card_id;
@@ -320,19 +346,41 @@ if (!card) {
   let isWinner = false;
 
   switch (winningPattern) {
-    case '1 Line':
-      isWinner = checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1;
-      break;
-    case '2 Lines':
-      isWinner = checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2;
-      break;
-    case 'Full House':
-      isWinner = checkFullHouseWin(cardGrid, currentCalledNumbersSet);
-      break;
-    default:
-      alert("Invalid winning pattern.");
-      return;
-  }
+  case '1 Line':
+    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) {
+      isWinner = true;
+    }
+    break;
+  case '2 Lines':
+    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) {
+      isWinner = true;
+    }
+    break;
+  case 'Full House':
+    if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) {
+      isWinner = true;
+    }
+    break;
+  case 'Four Corners':
+    if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) {
+      isWinner = true;
+    }
+    break;
+  case 'All':
+    if (
+      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||     // 1 Line
+      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||     // 2 Lines
+      checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||         // Full House
+      checkFourCornersWin(cardGrid, currentCalledNumbersSet)          // Four Corners
+    ) {
+      isWinner = true;
+    }
+    break;
+  default:
+    console.warn(`Unknown winning pattern: ${winningPattern}`);
+    break;
+}
+
 
   if (isWinner) {
     console.log(`Manual winner found: Card ID ${manualCardId}`);
