@@ -73,18 +73,25 @@ export default function DashboardScreen({
   const audioCache = useRef(new Map());
 
 useEffect(() => {
-  const categories = ['b', 'i', 'n', 'g', 'o'];
+  const ranges = {
+    b: [1, 15],
+    i: [16, 30],
+    n: [31, 45],
+    g: [46, 60],
+    o: [61, 75],
+  };
 
-  for (const cat of categories) {
-    for (let i = 1; i <= 75; i++) {
+  for (const [cat, [start, end]] of Object.entries(ranges)) {
+    for (let i = start; i <= end; i++) {
       const path = `/voicemale/${cat}_${i}.m4a`;
       const audio = new Audio(path);
       audioCache.current.set(path, audio);
     }
   }
 
-  console.log("✅ Preloaded all voicemale audio into cache");
+  console.log("✅ Correct audio files preloaded by column range");
 }, []);
+
 
   
   const playSoundForCall = (category, number) => {
