@@ -575,22 +575,21 @@ if (isWinner) {
   };
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 p-8 text-white font-sans overflow-hidden">
+   
+    <div className="w-screen h-screen bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 p-8 text-white font-sans overflow-hidden backdrop-blur-2xl bg-opacity-70">
       {/* Header */}
       <div className="flex justify-between items-center mb-8 border-b border-white/20 pb-4">
-        <h1 className="text-4xl font-extrabold text-yellow-300 drop-shadow-lg tracking-wide">
-          HaloBingo 
-        </h1>
+        <h1 className="text-4xl font-extrabold text-white drop-shadow-md tracking-wide">HaloBingo</h1>
         <div className="flex items-center space-x-6">
           <div className="text-white/80 font-medium text-xl flex items-center">
             <span className="text-blue-300 mr-2">Calls:</span> {calledNumbers.length}/75
           </div>
-          <div className="text-green-300 font-bold text-2xl flex items-center">
-            <span className="text-purple-300 mr-2">Prize:</span> {prize.toFixed(2)} ETB
+          <div className="text-cyan-300 font-bold text-2xl flex items-center">
+            <span className="text-blue-100 mr-2">Prize:</span> {prize.toFixed(2)} ETB
           </div>
           {winningCards.length > 0 && (
-            <div className="text-red-400 font-bold text-2xl flex items-center">
-              <span className="text-red-300 mr-2">Winners:</span> {winningCards.length}
+            <div className="text-rose-400 font-bold text-2xl flex items-center">
+              <span className="text-rose-300 mr-2">Winners:</span> {winningCards.length}
             </div>
           )}
         </div>
@@ -598,13 +597,11 @@ if (isWinner) {
 
       <div className="flex space-x-8 h-[calc(100vh-160px)]">
         {/* Left Panel */}
-        <div className="w-80 bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col justify-between shadow-xl border border-white/10">
+        <div className="w-80 bg-white/10 backdrop-blur-2xl rounded-2xl p-6 flex flex-col justify-between shadow-xl border border-white/20">
           <div>
-            <div className="text-sm mb-2 text-white/60">Current Call</div>
-            <div className="bg-gradient-to-br from-purple-800 to-blue-800 text-yellow-300 rounded-xl p-8 text-center text-7xl font-extrabold tracking-widest shadow-2xl animate-pulse-once border border-purple-700">
-              {currentCall
-                ? `${getCategory(currentCall)}${currentCall.toString().padStart(2, '0')}`
-                : '---'}
+            <div className="text-sm mb-2 text-white/70">Current Call</div>
+            <div className="bg-white/30 backdrop-blur-md text-blue-900 rounded-xl p-8 text-center text-7xl font-extrabold tracking-widest shadow-2xl border border-white/50 ring-4 ring-white/20 animate-pulse-once">
+              {currentCall ? `${getCategory(currentCall)}${currentCall.toString().padStart(2, '0')}` : '---'}
             </div>
           </div>
 
@@ -612,156 +609,87 @@ if (isWinner) {
             <div className="text-lg mb-3 text-white/70 font-semibold">Last 5 Called Numbers</div>
             <div className="grid grid-cols-5 gap-3">
               {[...calledNumbers.slice(0, 5)].map((n, i) => (
-                <div
-                  key={i}
-                  className="text-center p-3 bg-white/10 rounded-lg text-lg font-bold border border-white/20 shadow-inner"
-                >
+                <div key={i} className="text-center p-3 bg-white/10 rounded-lg text-lg font-bold border border-white/30 shadow-inner text-white/90 backdrop-blur">
                   {n ? n.toString().padStart(2, '0') : '--'}
                 </div>
               ))}
-              {Array(Math.max(0, 5 - calledNumbers.length))
-                .fill(null)
-                .map((_, i) => (
-                  <div
-                    key={`filler-${i}`}
-                    className="text-center p-3 bg-white/10 rounded-lg text-lg font-bold border border-white/20 shadow-inner"
-                  >
-                    --
-                  </div>
-                ))}
+              {Array(Math.max(0, 5 - calledNumbers.length)).fill(null).map((_, i) => (
+                <div key={`filler-${i}`} className="text-center p-3 bg-white/10 rounded-lg text-lg font-bold border border-white/30 shadow-inner text-white/50 backdrop-blur">
+                  --
+                </div>
+              ))}
             </div>
           </div>
-          <div className="mt-6 mb-2 p-4 border border-white/20 rounded-md bg-white/5 max-w-md w-full" style={{ minWidth: 0 }}>
-  <div className="mb-4 flex items-center gap-6 text-white font-medium">
-    <label className="flex items-center gap-2 cursor-pointer select-none">
-      <input
-        type="radio"
-        checked={mode === 'auto'}
-        onChange={() => setMode('auto')}
-        className="form-radio text-yellow-400"
-      />
-      Auto
-    </label>
-    <label className="flex items-center gap-2 cursor-pointer select-none">
-      <input
-        type="radio"
-        checked={mode === 'manual'}
-        onChange={() => setMode('manual')}
-        className="form-radio text-yellow-400"
-      />
-      Manual
-    </label>
-  </div>
 
-  {mode === 'manual' && (
-    <div className="flex flex-col sm:flex-row items-center gap-3">
-      <input
-        type="text"
-        placeholder="Enter Card ID"
-        value={manualCardId}
-        onChange={(e) => setManualCardId(e.target.value)}
-        className="flex-grow w-full sm:w-auto bg-transparent border border-white/40 text-white placeholder-white/70 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 min-w-0"
-      />
-      <button
-        onClick={handleManualCheck}
-        className="w-full sm:w-auto bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-semibold px-4 py-2 rounded transition min-w-[80px]"
-      >
-        Check
-      </button>
-    </div>
-  )}
-</div>   
+          <div className="mt-6 mb-2 p-4 border border-white/30 rounded-md bg-white/5 backdrop-blur max-w-md w-full">
+            <div className="mb-4 flex items-center gap-6 text-white font-medium">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input type="radio" checked={mode === 'auto'} onChange={() => setMode('auto')} className="form-radio text-blue-300" />
+                Auto
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input type="radio" checked={mode === 'manual'} onChange={() => setMode('manual')} className="form-radio text-blue-300" />
+                Manual
+              </label>
+            </div>
+            {mode === 'manual' && (
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <input type="text" placeholder="Enter Card ID" value={manualCardId} onChange={(e) => setManualCardId(e.target.value)}
+                  className="flex-grow w-full sm:w-auto bg-transparent border border-white/40 text-white placeholder-white/70 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 min-w-0"
+                />
+                <button onClick={handleManualCheck}
+                  className="w-full sm:w-auto bg-blue-300 hover:bg-blue-400 text-blue-900 font-semibold px-4 py-2 rounded transition min-w-[80px]"
+                >
+                  Check
+                </button>
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 gap-4 mt-6">
+            <button onClick={togglePlayPause}
+              className={`flex items-center justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
+                isRunning ? 'bg-rose-600 text-white' : 'bg-blue-600 text-white'
+              }`}
+            >
+              {isRunning ? <Pause size={20} className="mr-2" /> : <Play size={20} className="mr-2" />}
+              {isRunning ? 'Pause' : 'Start/Resume'}
+            </button>
 
-            <button
+            <button onClick={restartGame}
+              className="flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
+            >
+              <RotateCcw size={20} className="mr-2" /> Restart
+            </button>
 
-              onClick={togglePlayPause}
+            <button onClick={requestFullScreen}
+              className="col-span-2 flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
+            >
+              <Maximize2 size={20} className="mr-2" /> Fullscreen
+            </button>
+          </div>
+        </div>
 
-              className={`flex items-center bg-blue-500 justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
-
-                isRunning
-
-                  ? 'bg-red-600 text-white'
-
-                  : 'bg-blue-600 text-white'
-
-              }`}
-
-            >
-
-              {isRunning ? (
-
-                <Pause size={20} className="mr-2" />
-
-              ) : (
-
-                <Play size={20} className="mr-2" />
-
-              )}
-
-              {isRunning ? 'Pause' : 'Start/Resume'}
-
-            </button>
-
-            <button
-
-              onClick={restartGame}
-
-              className="flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
-
-            >
-
-              <RotateCcw size={20} className="mr-2" />
-
-              Restart
-
-            </button>
-
-            <button
-
-              onClick={requestFullScreen}
-
-              className="col-span-2 flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
-
-            >
-
-              <Maximize2 size={20} className="mr-2" />
-
-              Fullscreen
-
-            </button>
-
-          </div>
-
-        </div>
-
-
-          
-        {/* Main Grid for Bingo Numbers - 5 Rows, 16 Columns */}
-        <div className="flex-1 p-6 rounded-2xl bg-white/5 backdrop-blur-md shadow-xl border border-white/10 overflow-y-auto scrollbar-hide">
+        {/* Bingo Numbers Grid */}
+        <div className="flex-1 p-6 rounded-2xl bg-white/10 backdrop-blur-lg shadow-xl border border-white/20 overflow-y-auto scrollbar-hide">
           <div className="grid grid-cols-16 gap-x-2 gap-y-2 text-center font-bold text-white text-base">
             {Object.entries(CATEGORIES).map(([letter, [min, max]]) => (
               <React.Fragment key={letter}>
-                <div
-                  className={`flex items-center justify-center font-extrabold rounded-lg shadow-lg uppercase text-2xl p-3 border-4 border-white/80 ${categoryColors[letter]}`}
-                  style={{ height: '50px', boxShadow: '0 4px 16px 0 rgba(255,255,255,0.10)' }}
-                >
+                <div className={`flex items-center justify-center font-extrabold rounded-lg shadow-lg uppercase text-2xl p-3 border-4 border-white/60 bg-white/10 text-white/90`} style={{ height: '50px' }}>
                   {letter}
                 </div>
                 {Array.from({ length: 15 }).map((_, colIndex) => {
                   const num = min + colIndex;
                   const isCurrent = num === currentCall;
                   const isCalled = calledNumbers.includes(num);
-
                   return (
-                    <div
-                      key={num}
-                      className={`py-2 rounded-lg font-bold text-lg transition-all duration-200 shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 hover:ring-4 hover:ring-yellow-300/40 hover:z-10
+                    <div key={num}
+                      className={`py-2 rounded-lg font-bold text-lg shadow-lg text-white transition-all duration-200 flex items-center justify-center cursor-pointer backdrop-blur-sm hover:ring-2 hover:ring-white/30
                         ${isCurrent
-                          ? 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-400 text-yellow-900 font-extrabold transform scale-110 ring-4 ring-yellow-300 animate-pulse-once shadow-yellow-300/60 shadow-2xl drop-shadow-lg'
+                          ? 'bg-white/50 text-blue-900 font-extrabold ring-4 ring-white shadow-xl'
                           : isCalled
-                            ? 'bg-yellow-100/80 text-yellow-900 border-yellow-300 shadow-yellow-200/40 border font-bold'
-                            : `${categoryColors[letter]} border drop-shadow-md`
+                            ? 'bg-white/20 text-white border border-white/30'
+                            : 'bg-white/10 border border-white/20'
                         }`}
                       style={{ height: '50px' }}
                     >
@@ -775,7 +703,7 @@ if (isWinner) {
         </div>
       </div>
 
-      {/* Winning Cards Modal */}
+      {/* Modal */}
       <WinningCardsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
