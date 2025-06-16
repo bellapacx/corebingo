@@ -252,6 +252,9 @@ export default function CardManagementScreen({ setCurrentView }) {
           >
             Reports
           </button>
+          <div className="text-lg font-bold text-white bg-white/10 px-4 py-2 rounded shadow">
+    Balance: <span className="text-green-400">${balance.toFixed(2)}</span>
+  </div>
         </div>
         <div className="flex justify-end mb-4">
           <button
