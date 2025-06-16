@@ -459,7 +459,7 @@ const checkWinA = () => {
   for (const card of cardsToCheck) {
     const cardId = card.card_id;
 
-    const cardGrid = getCardGrid(card);
+    const cardGrid = getCardGrid(cardId);
     let isWinner = false;
 
     switch (winningPattern) {
