@@ -456,11 +456,11 @@ const checkWinA = () => {
     selectedCards.includes(card.card_id)
   );
   const wincardid = null;
-
+  let isWinner = false;
   for (const card of cardsToCheck) {
 
     const cardGrid = getCardGrid(card);
-    let isWinner = false;
+    
 
     switch (winningPattern) {
       case '1 Line':
@@ -485,22 +485,22 @@ const checkWinA = () => {
 
       
     }
-    if (isWinner) {
-      wincardid= card.card_id;
-      break;
-    }
-
-  }
-  if (isWinner) {
+  // Check if this card has already won
+if (isWinner) {
+   wincardid= card.card_id;
   if (passedCards.includes(wincardid)) {
     // Second time it's winning — lock it
     console.log(`🔒 Card ${wincardid} locked (won again after being passed)`);
     setLockedCards(prev => [...prev, card.card_id]);
+    break
   } else {
     // First time it's winning — pass it
     console.log(`⚠️ Card ${wincardid} passed (won too late)`);
     setPassedCards(prev => [...prev, wincardid]);
+    break;
   }
+  }
+  
 }
 };
 
