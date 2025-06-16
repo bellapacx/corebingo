@@ -450,7 +450,7 @@ const handleManualCheck = async () => {
 
 const checkWinA = () => {
  
-
+  console.log("Checking for wins with winning pattern:", winningPattern);
   const currentCalledNumbersSet = new Set(calledNumbers);
   const cardsToCheck = bingoCardsData.filter(card =>
     selectedCards.includes(card.card_id)
