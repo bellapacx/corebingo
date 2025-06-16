@@ -368,76 +368,71 @@ const handleManualCheck = async () => {
     return;
   }
 
- const normalizedManualId = Number(manualCardId.trim());
+  const normalizedManualId = Number(manualCardId.trim());
 
- const selectedCardsData = bingoCardsData.filter(card => selectedCards.includes(card.card_id));
-const card = selectedCardsData.find(c => c.card_id === normalizedManualId);
+  // 🔔 Check if this card already passed (missed the win opportunity)
+  if (passedCards.includes(normalizedManualId)) {
+    alert(`Card ${normalizedManualId} has already passed. It cannot win anymore.`);
+    return;
+  }
 
-if (!card) {
-  alert("Card ID not found in selected cards.");
-  return;
-}
+  const selectedCardsData = bingoCardsData.filter(card =>
+    selectedCards.includes(card.card_id)
+  );
+  const card = selectedCardsData.find(c => c.card_id === normalizedManualId);
 
+  if (!card) {
+    alert("Card ID not found in selected cards.");
+    return;
+  }
 
   const currentCalledNumbersSet = new Set(calledNumbers);
   const cardGrid = getCardGrid(card);
   let isWinner = false;
 
   switch (winningPattern) {
-  case '1 Line':
-    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) {
-      isWinner = true;
-    }
-    break;
-  case '2 Lines':
-    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) {
-      isWinner = true;
-    }
-    break;
-  case 'Full House':
-    if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) {
-      isWinner = true;
-    }
-    break;
-  case 'Four Corners':
-    if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) {
-      isWinner = true;
-    }
-    break;
-  case 'All':
-    if (
-      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||     // 1 Line
-      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||     // 2 Lines
-      checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||         // Full House
-      checkFourCornersWin(cardGrid, currentCalledNumbersSet)          // Four Corners
-    ) {
-      isWinner = true;
-    }
-    break;
-  default:
-    console.warn(`Unknown winning pattern: ${winningPattern}`);
-    break;
-}
-
+    case '1 Line':
+      if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) isWinner = true;
+      break;
+    case '2 Lines':
+      if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) isWinner = true;
+      break;
+    case 'Full House':
+      if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
+      break;
+    case 'Four Corners':
+      if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
+      break;
+    case 'All':
+      if (
+        checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||
+        checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||
+        checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||
+        checkFourCornersWin(cardGrid, currentCalledNumbersSet)
+      ) isWinner = true;
+      break;
+    default:
+      console.warn(`Unknown winning pattern: ${winningPattern}`);
+      break;
+  }
 
   if (isWinner) {
     console.log(`Manual winner found: Card ID ${manualCardId}`);
-
     try {
       const response = await submitWinning({
         cardId: manualCardId,
-        roundId,   // make sure roundId is defined in your component scope
-        shopId,    // make sure shopId is defined as well
-        prize,     // prize should also be defined properly
+        roundId,
+        shopId,
+        prize,
       });
       console.log('Manual winning submission response:', response);
       setStatus("won");
       setIsRunning(false);
       setWinningCards([normalizedManualId]);
       const audio = new Audio("/game/win.m4a");
-  audio.play().catch((err) => {
-    console.warn("Audio play blocked by browser:", err);
-  });
+      audio.play().catch((err) => {
+        console.warn("Audio play blocked by browser:", err);
+      });
       setIsModalOpen(true);
       window.speechSynthesis.cancel();
     } catch (error) {
@@ -445,12 +440,12 @@ if (!card) {
       alert('Failed to submit manual winning.');
     }
   } else {
-    setStatus("failed"); // 👈 set status
+    setStatus("failed");
     setWinningCards([normalizedManualId]);
     setIsModalOpen(true);
-    
   }
 };
+
 
 const checkWinA = async () => {
   
