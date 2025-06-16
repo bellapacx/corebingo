@@ -280,6 +280,10 @@ const checkWin = async () => {
       
       setIsRunning(false);
       setWinningCards([declaredWinnerCardId]);
+      const audio = new Audio("/game/win.m4a");
+  audio.play().catch((err) => {
+    console.warn("Audio play blocked by browser:", err);
+  });
       setIsModalOpen(true);
       window.speechSynthesis.cancel(); // Stop speech immediately on win
     } catch (error) {
@@ -344,6 +348,10 @@ if (!card) {
       setStatus("won");
       setIsRunning(false);
       setWinningCards([normalizedManualId]);
+      const audio = new Audio("/game/win.m4a");
+  audio.play().catch((err) => {
+    console.warn("Audio play blocked by browser:", err);
+  });
       setIsModalOpen(true);
       window.speechSynthesis.cancel();
     } catch (error) {
