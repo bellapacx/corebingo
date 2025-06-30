@@ -576,19 +576,14 @@ if (isWinner) {
   }, 0);
 };
 
-useEffect(() => {
-  let intervalId;
 
-  // Only set interval if game is running AND no winner yet
-  if (isRunning && winningCards.length === 0) {
-    intervalId = setInterval(() => {
-      callNextNumber();
-    }, interval);
-  }
-
-  return () => clearInterval(intervalId);
-}, [isRunning, winningCards, interval]);
-
+  useEffect(() => {
+    let intervalId;
+    if (isRunning) {
+      intervalId = setInterval(() => callNextNumber(), interval);
+    }
+    return () => clearInterval(intervalId);
+  }, [isRunning, calledNumbers, interval]);
 
   const togglePlayPause = () => {
     
