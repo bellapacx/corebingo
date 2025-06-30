@@ -589,10 +589,7 @@ if (isWinner) {
   }, [isRunning, calledNumbers, interval]);
 
   const togglePlayPause = () => {
-    const audio = new Audio(!isRunning ? "/game/start_game.m4a" : "/game/pause_game.m4a");
-  audio.play().catch((err) => {
-    console.warn("Audio play blocked by browser:", err);
-  });
+    
     // Crucial for browser speech policies: a user gesture often required.
     // If not running and it's the first call, make a dummy speech attempt
     // to "activate" speech synthesis, which will then allow subsequent calls to play.
@@ -601,6 +598,10 @@ if (isWinner) {
         window.speechSynthesis.speak(dummyUtterance);
     }
     // Play sound
+    const audio = new Audio(!isRunning ? "/game/start_game.m4a" : "/game/pause_game.m4a");
+  audio.play().catch((err) => {
+    console.warn("Audio play blocked by browser:", err);
+  });
   
     setIsRunning((prev) => !prev);
   };
