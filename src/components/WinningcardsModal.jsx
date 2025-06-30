@@ -122,7 +122,7 @@ export default function WinningCardsModal({
 
                   >
                     
-                    <span className="text-sm text-white/40 mb-1">Winner #{idx + 1}</span>
+                    <span className="text-sm text-white/40 mb-1">Winner#{idx + 1}</span>
                     <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
 
                     {status === 'failed' && !alreadyChecked && (
