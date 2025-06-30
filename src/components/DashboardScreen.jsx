@@ -360,6 +360,7 @@ const checkWin = async () => {
 
     if (isWinner && !winningCards.includes(card.card_id)) {
       newWinners.push(card.card_id);
+      setWinningCards(prev => [...prev, card.card_id]);
     }
   }
 
