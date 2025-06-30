@@ -99,8 +99,14 @@ export default function WinningCardsModal({
         {actualWinningCards.length === 0 ? (
           <p className="text-center text-xl text-white/80">No winning cards to display yet.</p>
         ) : (
-          <div className="max-h-[70vh] overflow-y-auto pr-2">
-            <div className="grid gap-6 justify-center sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          <div className="max-h-[70vh] overflow-y-auto pr-2 flex justify-center">
+  <div
+    className={`${
+      actualWinningCards.length === 1
+        ? "w-full max-w-md"
+        : "grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+    }`}
+  >
               {actualWinningCards.map((card, idx) => {
                 const cardGrid = getCardGrid(card);
                 const cardCategoryColumns = ['B', 'I', 'N', 'G', 'O'];
@@ -110,8 +116,12 @@ export default function WinningCardsModal({
                 return (
                   <div
                     key={card.card_id}
-                    className="flex flex-col items-center border border-white/10 rounded-lg p-4 bg-black/10"
+                    className={`flex flex-col items-center border border-white/10 rounded-lg p-4 bg-black/10 ${
+  actualWinningCards.length === 1 ? "mx-auto" : ""
+}`}
+
                   >
+                    
                     <span className="text-sm text-white/40 mb-1">Winner #{idx + 1}</span>
                     <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
 
