@@ -471,10 +471,7 @@ const handleManualCheck = async () => {
       setStatus("won");
       setIsRunning(false);
       setWinningCards([normalizedManualId]);
-      const audio = new Audio("/game/win.m4a");
-      audio.play().catch((err) => {
-        console.warn("Audio play blocked by browser:", err);
-      });
+      
       setIsModalOpen(true);
       window.speechSynthesis.cancel();
     } catch (error) {
@@ -579,14 +576,19 @@ if (isWinner) {
   }, 0);
 };
 
+useEffect(() => {
+  let intervalId;
 
-  useEffect(() => {
-    let intervalId;
-    if (isRunning) {
-      intervalId = setInterval(() => callNextNumber(), interval);
-    }
-    return () => clearInterval(intervalId);
-  }, [isRunning, calledNumbers, interval]);
+  // Only set interval if game is running AND no winner yet
+  if (isRunning && winningCards.length === 0) {
+    intervalId = setInterval(() => {
+      callNextNumber();
+    }, interval);
+  }
+
+  return () => clearInterval(intervalId);
+}, [isRunning, winningCards, interval]);
+
 
   const togglePlayPause = () => {
     
