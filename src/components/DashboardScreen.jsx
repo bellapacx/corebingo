@@ -68,6 +68,7 @@ export default function DashboardScreen({
 const [lastWinCheckNumberCount, setLastWinCheckNumberCount] = useState(0);
 const [passedCards, setPassedCards] = useState([]);
 const [lockedCards, setLockedCards] = useState([]);
+const intervalRef = useRef(null); 
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
   const [availableVoices, setAvailableVoices] = useState([]);
@@ -366,7 +367,11 @@ const checkWin = async () => {
 
   if (newWinners.length > 0) {
     console.log(`Winners found: ${newWinners.join(', ')}`);
-
+    // Stop number calling
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     try {
       // Submit each winning card individually
       for (const cardId of newWinners) {
