@@ -554,10 +554,7 @@ if (isWinner) {
 
   const callNextNumber = () => {
   // Prevent number calling if a winner is already declared
-  if (winningCards.length > 0) {
-    setIsRunning(false); // just in case
-    return;
-  }
+  if (winningCards.length > 0) return; 
 
   const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
   if (remaining.length === 0) {
@@ -579,7 +576,7 @@ if (isWinner) {
 
   useEffect(() => {
     let intervalId;
-    if (isRunning) {
+    if (isRunning && winningCards.length === 0) {
       intervalId = setInterval(() => callNextNumber(), interval);
     }
     return () => clearInterval(intervalId);
