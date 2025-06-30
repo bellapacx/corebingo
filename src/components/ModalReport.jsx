@@ -4,6 +4,7 @@ export default function ModalReport({ show, onClose, shopId }) {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [balance, setBalance] = useState(null); // 👈 Add this
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
 
@@ -16,7 +17,10 @@ export default function ModalReport({ show, onClose, shopId }) {
           if (!res.ok) throw new Error('Failed to fetch reports');
           return res.json();
         })
-        .then((data) => setReportData(Array.isArray(data.games) ? data.games : []))
+        .then((data) => {
+  setReportData(Array.isArray(data.games) ? data.games : []);
+  setBalance(data.balance ?? null); // 👈 Set balance
+})
         .catch((err) => setError(err.message))
         .finally(() => setLoading(false));
     }
@@ -50,7 +54,10 @@ export default function ModalReport({ show, onClose, shopId }) {
         </button>
         <h2 className="text-3xl font-extrabold mb-6 text-blue-300 drop-shadow">Reports</h2>
         <div className="text-lg font-bold text-white bg-white/10 px-4 py-2 rounded shadow">
-    Balance: <span className="text-green-400">jsdfjk</span>
+        Balance:{" "}
+  <span className="text-green-400">
+    {balance !== null ? balance.toLocaleString(undefined, { minimumFractionDigits: 2 }) : 'Loading...'}
+  </span>
   </div>
         {/* Date range filter */}
         <div className="mb-4 flex flex-wrap items-center gap-3">
