@@ -555,7 +555,8 @@ if (isWinner) {
 
   const callNextNumber = () => {
   // Prevent number calling if a winner is already declared
-  if (winningCards.length > 0) return; 
+  if (winningCardsRef.current.length > 0) return;
+
 
   const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
   if (remaining.length === 0) {
@@ -573,6 +574,11 @@ if (isWinner) {
     checkWinA();  // For tracking passed/locked cards
   }, 0);
 };
+
+const winningCardsRef = useRef([]);
+useEffect(() => {
+  winningCardsRef.current = winningCards;
+}, [winningCards]);
 
 
   useEffect(() => {
