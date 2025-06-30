@@ -580,7 +580,7 @@ if (isWinner) {
       intervalId = setInterval(() => callNextNumber(), interval);
     }
     return () => clearInterval(intervalId);
-  }, [isRunning, calledNumbers, interval]);
+  }, [isRunning, calledNumbers, interval, winningCards]);
 
   const togglePlayPause = () => {
     
