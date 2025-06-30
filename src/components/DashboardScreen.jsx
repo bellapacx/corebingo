@@ -278,85 +278,74 @@ const checkWin = async () => {
   if (mode === 'manual') return;
   if (!calledNumbers.length) return;
   if (winningCards.length > 0) return;
-  
-  const currentCalledNumbersSet = new Set(calledNumbers);
 
-  const cardsToCheck = bingoCardsData.filter(card => selectedCards.includes(card.card_id));
-  let declaredWinnerCardId = null;
+  const currentCalledNumbersSet = new Set(calledNumbers);
+  const cardsToCheck = bingoCardsData.filter(card =>
+    selectedCards.includes(card.card_id)
+  );
+
+  const newWinners = [];
 
   for (const card of cardsToCheck) {
     const cardGrid = getCardGrid(card);
     let isWinner = false;
 
     switch (winningPattern) {
-  case '1 Line':
-    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) {
-      isWinner = true;
+      case '1 Line':
+        isWinner = checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1;
+        break;
+      case '2 Lines':
+        isWinner = checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2;
+        break;
+      case 'Full House':
+        isWinner = checkFullHouseWin(cardGrid, currentCalledNumbersSet);
+        break;
+      case 'Four Corners':
+        isWinner = checkFourCornersWin(cardGrid, currentCalledNumbersSet);
+        break;
+      case 'All':
+        isWinner =
+          checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||
+          checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||
+          checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||
+          checkFourCornersWin(cardGrid, currentCalledNumbersSet);
+        break;
+      default:
+        console.warn(`Unknown winning pattern: ${winningPattern}`);
     }
-    break;
-  case '2 Lines':
-    if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) {
-      isWinner = true;
-    }
-    break;
-  case 'Full House':
-    if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) {
-      isWinner = true;
-    }
-    break;
-  case 'Four Corners':
-    if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) {
-      isWinner = true;
-    }
-    break;
-  case 'All':
-    if (
-      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||     // 1 Line
-      checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||     // 2 Lines
-      checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||         // Full House
-      checkFourCornersWin(cardGrid, currentCalledNumbersSet)          // Four Corners
-    ) {
-      isWinner = true;
-    }
-    break;
-  default:
-    console.warn(`Unknown winning pattern: ${winningPattern}`);
-    break;
-}
 
-
-    if (isWinner) {
-      declaredWinnerCardId = card.card_id;
-      break;
+    if (isWinner && !winningCards.includes(card.card_id)) {
+      newWinners.push(card.card_id);
     }
   }
 
-  if (declaredWinnerCardId !== null) {
-    console.log(`Winner found: Card ID ${declaredWinnerCardId}`);
+  if (newWinners.length > 0) {
+    console.log(`Winners found: ${newWinners.join(', ')}`);
 
     try {
-      const response = await submitWinning({
-        cardId: declaredWinnerCardId,
-        roundId: roundId,
-        shopId,
-        prize,
-      });
-      console.log('Winning submission response:', response);
-      
+      // Submit each winning card individually
+      for (const cardId of newWinners) {
+        await submitWinning({
+          cardId,
+          roundId,
+          shopId,
+          prize,
+        });
+      }
+
       setIsRunning(false);
-      setWinningCards([declaredWinnerCardId]);
-      const audio = new Audio("/game/win.m4a");
-  audio.play().catch((err) => {
-    console.warn("Audio play blocked by browser:", err);
-  });
+      setWinningCards(newWinners);
       setIsModalOpen(true);
-      window.speechSynthesis.cancel(); // Stop speech immediately on win
+      window.speechSynthesis.cancel(); // Stop speech
+
+     
     } catch (error) {
-      console.error('Error submitting winning:', error);
-      alert('Failed to submit winning. Please try again.');
+      console.error('Error submitting winning cards:', error);
+      alert('Failed to submit winners. Please try again.');
     }
   }
 };
+
 //manual check function
 const handleManualCheck = async () => {
   if (!manualCardId) {
