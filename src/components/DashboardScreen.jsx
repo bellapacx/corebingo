@@ -507,26 +507,29 @@ if (isWinner) {
 };
 
   const callNextNumber = () => {
-    const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
-    if (remaining.length === 0) {
-      setIsRunning(false);
-      return;
-    }
-    const next = remaining[Math.floor(Math.random() * remaining.length)];
-    setCalledNumbers((prev) => [next, ...prev]);
-    setCurrentCall(next);
-    // Check for wins after state updates have potentially rendered the new number
-    // using setTimeout(0) or by making checkWin part of an effect for calledNumbers.
-    // For simplicity, we keep setTimeout(0) here.
-    // Mark previous calledNumbers count — used to disqualify late wins
+  // Prevent number calling if a winner is already declared
+  if (winningCards.length > 0) {
+    setIsRunning(false); // just in case
+    return;
+  }
+
+  const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
+  if (remaining.length === 0) {
+    setIsRunning(false);
+    return;
+  }
+
+  const next = remaining[Math.floor(Math.random() * remaining.length)];
+  setCalledNumbers((prev) => [next, ...prev]);
+  setCurrentCall(next);
   setLastWinCheckNumberCount(calledNumbers.length + 1);
 
-    // Check for winners
   setTimeout(() => {
-    checkWin();
-    checkWinA(); // separate logic to track passed cards
+    checkWin();   // May trigger winner and stop game
+    checkWinA();  // For tracking passed/locked cards
   }, 0);
-  };
+};
+
 
   useEffect(() => {
     let intervalId;
