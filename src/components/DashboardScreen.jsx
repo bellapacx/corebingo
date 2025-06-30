@@ -272,6 +272,40 @@ const checkFourCornersWin = (grid, calledNumbersSet) => {
 
   return corners.every(num => isMarked(num, calledNumbersSet));
 };
+//check for Cross Pattern win
+const checkCrossPatternWin = (grid, calledNumbersSet) => {
+  const middle = 2; // center index for 5x5 grid
+
+  // Get middle row and column values (center cell is shared, avoid duplicate)
+  const crossNumbers = new Set();
+
+  // Add middle row
+  for (let col = 0; col < 5; col++) {
+    crossNumbers.add(grid[middle][col]);
+  }
+
+  // Add middle column
+  for (let row = 0; row < 5; row++) {
+    if (row !== middle) {
+      crossNumbers.add(grid[row][middle]);
+    }
+  }
+
+  // Check if all cross numbers are marked
+  return [...crossNumbers].every(num => isMarked(num, calledNumbersSet));
+};
+// check inner corner
+const checkInnerCornersAndCenterWin = (grid, calledNumbersSet) => {
+  const positions = [
+    grid[1][1], // top-left inner
+    grid[1][3], // top-right inner
+    grid[3][1], // bottom-left inner
+    grid[3][3], // bottom-right inner
+    grid[2][2], // center (usually FREE)
+  ];
+
+  return positions.every(num => isMarked(num, calledNumbersSet));
+};
 
  // Main win checking function
 const checkWin = async () => {
@@ -303,12 +337,22 @@ const checkWin = async () => {
       case 'Four Corners':
         isWinner = checkFourCornersWin(cardGrid, currentCalledNumbersSet);
         break;
+      case 'Cross':
+        isWinner = checkCrossPatternWin(cardGrid, currentCalledNumbersSet);
+        break;
+      case 'Inner Corners + Center':
+  isWinner = checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet);
+  break;
+
       case 'All':
         isWinner =
           checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||
           checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||
           checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||
-          checkFourCornersWin(cardGrid, currentCalledNumbersSet);
+          checkFourCornersWin(cardGrid, currentCalledNumbersSet) ||
+          checkCrossPatternWin(cardGrid, currentCalledNumbersSet) ||
+          checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
+          ;
         break;
       default:
         console.warn(`Unknown winning pattern: ${winningPattern}`);
@@ -393,12 +437,20 @@ const handleManualCheck = async () => {
     case 'Four Corners':
       if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
       break;
+    case 'Cross':
+        isWinner = checkCrossPatternWin(cardGrid, currentCalledNumbersSet);
+        break;
+    case 'Inner Corners + Center':
+  isWinner = checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet);
+  break;
     case 'All':
       if (
         checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||
         checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||
         checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||
-        checkFourCornersWin(cardGrid, currentCalledNumbersSet)
+        checkFourCornersWin(cardGrid, currentCalledNumbersSet) ||
+        checkCrossPatternWin(cardGrid, currentCalledNumbersSet) ||
+        checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
       ) isWinner = true;
       break;
     default:
@@ -465,13 +517,21 @@ const checkWinA = () => {
       case 'Four Corners':
         if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
         break;
+      case 'Cross':
+        isWinner = checkCrossPatternWin(cardGrid, currentCalledNumbersSet);
+        break;
+      case 'Inner Corners + Center':
+  isWinner = checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet);
+  break;
       case 'All':
         if (
           checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 &&
           checkFullHouseWin(cardGrid, currentCalledNumbersSet) &&
-          checkFourCornersWin(cardGrid, currentCalledNumbersSet)
+          checkFourCornersWin(cardGrid, currentCalledNumbersSet) &&
+          checkCrossPatternWin(cardGrid, currentCalledNumbersSet) &&
+          checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
         ) isWinner = true;
-        console.log(`Checking card ${card.card_id} for 1 Line win: ${isWinner}`);
+        //console.log(`Checking card ${card.card_id} for 1 Line win: ${isWinner}`);
         break;
 
       

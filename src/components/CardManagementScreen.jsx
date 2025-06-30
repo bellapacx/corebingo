@@ -61,7 +61,7 @@ export default function CardManagementScreen({ setCurrentView }) {
         alert('❌ Unable to load balance.');
       }
     };
-
+ 
     fetchBalance();
   }, []);
 
@@ -226,6 +226,8 @@ export default function CardManagementScreen({ setCurrentView }) {
             <option className="bg-blue-900">1 Line</option>
             <option className="bg-blue-900">2 Lines</option>
              <option className="bg-blue-900">Four Corners</option>
+              <option className="bg-blue-900">Cross</option>
+            <option className="bg-blue-900">Inner Corners + Center</option>
             <option className="bg-blue-900">Full House</option>
           </select>
         </div>
