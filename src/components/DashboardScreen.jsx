@@ -64,6 +64,8 @@ export default function DashboardScreen({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [manualCardId, setManualCardId] = useState('');
   const [mode, setMode] = useState('auto');
+  const intervalRef = useRef(null);
+
   const [status, setStatus] = useState("won");
 const [lastWinCheckNumberCount, setLastWinCheckNumberCount] = useState(0);
 const [passedCards, setPassedCards] = useState([]);
@@ -383,7 +385,11 @@ const checkWin = async () => {
       setIsModalOpen(true);
       window.speechSynthesis.cancel(); // Stop speech
 
-     
+      // 🔥 Forcefully stop number calling
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     } catch (error) {
       console.error('Error submitting winning cards:', error);
       alert('Failed to submit winners. Please try again.');
@@ -584,6 +590,9 @@ useEffect(() => {
   useEffect(() => {
     let intervalId;
     if (isRunning && winningCards.length === 0) {
+      intervalRef.current = setInterval(() => {
+      callNextNumber();
+    }, interval);
       intervalId = setInterval(() => callNextNumber(), interval);
     }
     return () => clearInterval(intervalId);
