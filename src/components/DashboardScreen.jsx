@@ -574,11 +574,6 @@ if (isWinner) {
   }, 0);
 };
 
-const winningCardsRef = useRef([]);
-useEffect(() => {
-  winningCardsRef.current = winningCards;
-}, [winningCards]);
-
 
   useEffect(() => {
     let intervalId;
