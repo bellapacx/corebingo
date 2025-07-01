@@ -367,6 +367,7 @@ const checkWin = async () => {
 
   if (newWinners.length > 0) {
     console.log(`Winners found: ${newWinners.join(', ')}`);
+    setIsRunning(false);
     // Stop number calling
   
     try {
@@ -380,7 +381,7 @@ const checkWin = async () => {
         });
       }
 
-      setIsRunning(false);
+      
       setWinningCards(newWinners);
       setIsModalOpen(true);
       window.speechSynthesis.cancel(); // Stop speech
