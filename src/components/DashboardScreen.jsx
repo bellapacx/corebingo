@@ -635,8 +635,11 @@ const callNextNumber = () => {
     gameOverRef.current = true;
     setWinningCards(winners);
     setIsRunning(false);
-    setIsModalOpen(true);
     window.speechSynthesis.cancel();
+    setTimeout(() => {
+      setIsModalOpen(true);
+    }, 1000); // Delay modal open by 1 second
+    
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
