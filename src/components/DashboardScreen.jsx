@@ -586,6 +586,10 @@ if (isWinner) {
 
   useEffect(() => {
   // Clear any existing interval
+  if (winningCards.length > 0) {
+    
+    return;
+  }
   if (intervalRef.current) {
     clearInterval(intervalRef.current);
   }
