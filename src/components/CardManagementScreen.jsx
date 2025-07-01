@@ -9,7 +9,7 @@ export default function CardManagementScreen({ setCurrentView }) {
   const [selectedCards, setSelectedCards] = useState([]);
   const [cardColor, setCardColor] = useState(DEFAULT_COLOR);
   const [bet, setBet] = useState(10);
-  const [commission, setCommission] = useState('10%'); // e.g., "10%"
+  const [commission, setCommission] = useState('20%'); // e.g., "10%"
   const [interval, setInterval] = useState('5 sec'); // e.g., "3 sec"
   const [pattern, setPattern] = useState('All'); // e.g., "All"
   const [language, setLanguage] = useState('Amharic'); // Default language
