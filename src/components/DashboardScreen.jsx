@@ -351,8 +351,8 @@ const checkWin = async () => {
           checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||
           checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||
           checkFourCornersWin(cardGrid, currentCalledNumbersSet) ||
-          checkCrossPatternWin(cardGrid, currentCalledNumbersSet) ||
-          checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
+          checkCrossPatternWin(cardGrid, currentCalledNumbersSet) 
+          //checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
           ;
         break;
       default:
@@ -455,8 +455,8 @@ const handleManualCheck = async () => {
         checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||
         checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||
         checkFourCornersWin(cardGrid, currentCalledNumbersSet) ||
-        checkCrossPatternWin(cardGrid, currentCalledNumbersSet) ||
-        checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
+        checkCrossPatternWin(cardGrid, currentCalledNumbersSet)
+       // checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
       ) isWinner = true;
       break;
     default:
@@ -560,7 +560,13 @@ if (isWinner) {
 
   const callNextNumber = () => {
   // Prevent number calling if a winner is already declared
-  if (winningCards.length > 0) return; 
+  if (winningCards.length > 0) {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    return;
+  }
 
   const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
   if (remaining.length === 0) {
@@ -581,12 +587,22 @@ if (isWinner) {
 
 
   useEffect(() => {
-    let intervalId;
-    if (isRunning && winningCards.length === 0) {
-      intervalId = setInterval(() => callNextNumber(), interval);
+  // Clear any existing interval
+  if (intervalRef.current) {
+    clearInterval(intervalRef.current);
+  }
+
+  // Set new interval only if running and no winners
+  if (isRunning && winningCards.length === 0) {
+    intervalRef.current = setInterval(() => callNextNumber(), interval);
+  }
+
+  return () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-    return () => clearInterval(intervalId);
-  }, [isRunning, calledNumbers, interval, winningCards]);
+  };
+}, [isRunning, calledNumbers, interval, winningCards]);
 
   const togglePlayPause = () => {
     
