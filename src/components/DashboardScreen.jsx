@@ -308,6 +308,7 @@ const checkInnerCornersAndCenterWin = (grid, calledNumbersSet) => {
   return positions.every(num => isMarked(num, calledNumbersSet));
 };
 
+const gameOverRef = useRef(false);
  // Main win checking function
 const checkWin = async () => {
   if (mode === 'manual') return;
@@ -367,9 +368,14 @@ const checkWin = async () => {
 
   if (newWinners.length > 0) {
     console.log(`Winners found: ${newWinners.join(', ')}`);
+    gameOverRef.current = true; // Mark game as over
     setIsRunning(false);
     // Stop number calling
-  
+    // Clear interval immediately
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     try {
       // Submit each winning card individually
       for (const cardId of newWinners) {
@@ -555,10 +561,9 @@ if (isWinner) {
   
 }
 };
-
-  const callNextNumber = () => {
-  // Prevent number calling if a winner is already declared
-  if (winningCards.length > 0) {
+// Update callNextNumber to check gameOverRef
+const callNextNumber = () => {
+  if (gameOverRef.current) {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -566,36 +571,32 @@ if (isWinner) {
     return;
   }
 
-  const remaining = NUMBER_RANGE.filter((n) => !calledNumbers.includes(n));
+  const remaining = NUMBER_RANGE.filter(n => !calledNumbers.includes(n));
   if (remaining.length === 0) {
+    gameOverRef.current = true;
     setIsRunning(false);
     return;
   }
 
   const next = remaining[Math.floor(Math.random() * remaining.length)];
-  setCalledNumbers((prev) => [next, ...prev]);
+  setCalledNumbers(prev => [next, ...prev]);
   setCurrentCall(next);
-  setLastWinCheckNumberCount(calledNumbers.length + 1);
-
-  setTimeout(() => {
-    checkWin();   // May trigger winner and stop game
-    //checkWinA();  // For tracking passed/locked cards
-  }, 0);
+  //setLastWinCheckNumberCount(calledNumbers.length + 1);
+  // Check for wins after state updates
+  setTimeout(checkWin, 0);
 };
-
+  
 
   useEffect(() => {
   // Clear any existing interval
-  if (winningCards.length > 0) {
-    
-    return;
-  }
+  // Clear any existing interval
   if (intervalRef.current) {
     clearInterval(intervalRef.current);
+    intervalRef.current = null;
   }
   console.log("Setting up interval with isRunning:", isRunning, "and winningCards:", winningCards.length);
   // Set new interval only if running and no winners
-  if (isRunning && winningCards.length === 0) {
+  if (isRunning && !gameOverRef.current) {
     intervalRef.current = setInterval(() => callNextNumber(), interval);
   }
 
