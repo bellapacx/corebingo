@@ -579,7 +579,7 @@ if (isWinner) {
 
   setTimeout(() => {
     checkWin();   // May trigger winner and stop game
-    checkWinA();  // For tracking passed/locked cards
+    //checkWinA();  // For tracking passed/locked cards
   }, 0);
 };
 
