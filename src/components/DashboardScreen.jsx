@@ -368,10 +368,7 @@ const checkWin = async () => {
   if (newWinners.length > 0) {
     console.log(`Winners found: ${newWinners.join(', ')}`);
     // Stop number calling
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+  
     try {
       // Submit each winning card individually
       for (const cardId of newWinners) {
@@ -591,7 +588,7 @@ if (isWinner) {
   if (intervalRef.current) {
     clearInterval(intervalRef.current);
   }
-
+  console.log("Setting up interval with isRunning:", isRunning, "and winningCards:", winningCards.length);
   // Set new interval only if running and no winners
   if (isRunning && winningCards.length === 0) {
     intervalRef.current = setInterval(() => callNextNumber(), interval);
