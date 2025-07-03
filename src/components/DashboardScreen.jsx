@@ -686,23 +686,32 @@ const callNextNumber = () => {
   };
 }, [isRunning, calledNumbers, interval, winningCards]);
 
-  const togglePlayPause = () => {
-    
-    // Crucial for browser speech policies: a user gesture often required.
-    // If not running and it's the first call, make a dummy speech attempt
-    // to "activate" speech synthesis, which will then allow subsequent calls to play.
+const togglePlayPause = () => {
+    // Dummy speech activation (if needed)
     if (!isRunning && currentCall === null && speechUtteranceRef.current) {
         const dummyUtterance = new SpeechSynthesisUtterance(' ');
         window.speechSynthesis.speak(dummyUtterance);
     }
-    // Play sound
+
+    // Play sound with Web Audio API for volume boost
     const audio = new Audio(!isRunning ? "/game/start_game.m4a" : "/game/pause_game.m4a");
-  audio.play().catch((err) => {
-    console.warn("Audio play blocked by browser:", err);
-  });
+    
+    // Create AudioContext and GainNode
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 3.0; // 200% louder (1.0 = normal, 3.0 = 300% volume)
+
+    // Connect audio to gain node and output
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    audio.play().catch((err) => {
+        console.warn("Audio play blocked by browser:", err);
+    });
   
     setIsRunning((prev) => !prev);
-  };
+};
 
   const restartGame = () => {
     setIsRunning(false);
