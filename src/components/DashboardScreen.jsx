@@ -638,7 +638,7 @@ const callNextNumber = () => {
     window.speechSynthesis.cancel();
     setTimeout(() => {
       setIsModalOpen(true);
-    }, 1000); // Delay modal open by 1 second
+    }, 1000); // Delay modal open by 1 seconds
     
 
     if (intervalRef.current) {
