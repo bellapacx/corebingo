@@ -115,6 +115,10 @@ useEffect(() => {
     audioRef.current = fallback;
   }
 
+  // Set volume to 200% (clamped to max 1.0, which is 100%)
+  audioRef.current.volume = Math.min(2.0, 3.0); // 3.0 = 200% louder (1.0 + 2.0)
+  
+
   audioRef.current.currentTime = 0;
   audioRef.current.play().catch((err) => {
     console.warn("🎧 Audio play error:", err);
