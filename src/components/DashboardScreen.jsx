@@ -109,22 +109,25 @@ useEffect(() => {
   if (cachedAudio) {
     audioRef.current = cachedAudio;
   } else {
-    // Fallback: Load on demand (shouldn't happen if cache is correct)
     const fallback = new Audio(audioPath);
     audioCache.current.set(audioPath, fallback);
     audioRef.current = fallback;
   }
 
-  // Set volume to 200% (clamped to max 1.0, which is 100%)
-  audioRef.current.volume = Math.min(2.0, 3.0); // 3.0 = 200% louder (1.0 + 2.0)
-  
+  // Web Audio API setup for volume boost
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = 3.0; // 200% louder (1.0 = normal, 3.0 = 200% boost)
+
+  const source = audioContext.createMediaElementSource(audioRef.current);
+  source.connect(gainNode);
+  gainNode.connect(audioContext.destination);
 
   audioRef.current.currentTime = 0;
   audioRef.current.play().catch((err) => {
     console.warn("🎧 Audio play error:", err);
   });
 };
-
   // --- Speech Synthesis Setup ---
   useEffect(() => {
     // Initialize SpeechSynthesisUtterance only once
