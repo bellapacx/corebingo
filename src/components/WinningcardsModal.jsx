@@ -53,13 +53,24 @@ export default function WinningCardsModal({
 
   // Play audio once when modal opens with winners
   useEffect(() => {
-    if (isOpen && winningCardIds.length > 0 && status === 'won') {
-      const audio = new Audio("/game/win.m4a");
-      audio.play().catch((err) => {
-        console.warn("Audio play blocked by browser:", err);
-      });
-    }
-  }, [isOpen, winningCardIds, status]);
+  if (isOpen && winningCardIds.length > 0 && status === 'won') {
+    const audio = new Audio("/game/win.m4a");
+
+    // Create AudioContext and GainNode for volume boost
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 3.0; // 200% louder (1.0 = normal, 3.0 = 300% volume)
+
+    // Connect audio to gain node and output
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    audio.play().catch((err) => {
+      console.warn("Audio play blocked by browser:", err);
+    });
+  }
+}, [isOpen, winningCardIds, status]);
 
   if (!isOpen) return null;
 
