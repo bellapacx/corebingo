@@ -497,7 +497,7 @@ const handleManualCheck = async () => {
     }
   } else {
     setStatus("failed");
-    setWinningCards([normalizedManualId]);
+    //setWinningCards([normalizedManualId]);
     setIsModalOpen(true);
   }
 };
