@@ -61,6 +61,7 @@ export default function DashboardScreen({
   const [currentCall, setCurrentCall] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const [winningCards, setWinningCards] = useState([]);
+   const [failedCards, setFailedCards] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [manualCardId, setManualCardId] = useState('');
   const [mode, setMode] = useState('auto');
@@ -497,7 +498,7 @@ const handleManualCheck = async () => {
     }
   } else {
     setStatus("failed");
-    //setWinningCards([normalizedManualId]);
+    setFailedCards([normalizedManualId]);
     setIsModalOpen(true);
   }
 };
@@ -941,6 +942,7 @@ const togglePlayPause = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         winningCardIds={winningCards}
+        failedCards={failedCards}
         allBingoCards={bingoCardsData}
         calledNumbersSet={new Set(calledNumbers)}
         status={status}

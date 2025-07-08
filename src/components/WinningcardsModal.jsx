@@ -48,41 +48,43 @@ export default function WinningCardsModal({
   allBingoCards,
   calledNumbersSet,
   status = 'won',
+  failedCards,
 }) {
   const [checkedFailedCards, setCheckedFailedCards] = useState([]);
 
   // Play audio once when modal opens with winners
   useEffect(() => {
-  if (isOpen && winningCardIds.length > 0 && status === 'won') {
-    const audio = new Audio("/game/win.m4a");
+    if (isOpen && winningCardIds.length > 0 && status === 'won') {
+      const audio = new Audio("/game/win.m4a");
 
-    // Create AudioContext and GainNode for volume boost
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = 3.0; // 200% louder (1.0 = normal, 3.0 = 300% volume)
+      // Create AudioContext and GainNode for volume boost
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 3.0;
 
-    // Connect audio to gain node and output
-    const source = audioContext.createMediaElementSource(audio);
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+      const source = audioContext.createMediaElementSource(audio);
+      source.connect(gainNode);
+      gainNode.connect(audioContext.destination);
 
-    audio.play().catch((err) => {
-      console.warn("Audio play blocked by browser:", err);
-    });
-  }
-}, [isOpen, winningCardIds, status]);
+      audio.play().catch((err) => {
+        console.warn("Audio play blocked by browser:", err);
+      });
+    }
+  }, [isOpen, winningCardIds, status]);
 
   if (!isOpen) return null;
 
-  const actualWinningCards = allBingoCards.filter(card =>
-    winningCardIds.includes(card.card_id)
-  );
+  // ✅ Use correct cards based on status
+  const displayedCards =
+    status === 'failed'
+      ? allBingoCards.filter((card) => failedCards.includes(card.card_id))
+      : allBingoCards.filter((card) => winningCardIds.includes(card.card_id));
 
   const isCardChecked = (cardId) => checkedFailedCards.includes(cardId);
 
   const handleMarkAsChecked = (cardId) => {
     if (!isCardChecked(cardId)) {
-      setCheckedFailedCards(prev => [...prev, cardId]);
+      setCheckedFailedCards((prev) => [...prev, cardId]);
     }
   };
 
@@ -103,38 +105,39 @@ export default function WinningCardsModal({
           }`}
         >
           {status === 'won'
-            ? `🎉 ${actualWinningCards.length} Winning Card${actualWinningCards.length > 1 ? 's' : ''}!`
-            : '❌ Failed Card(s)!'}
+            ? `🎉 ${displayedCards.length} Winning Card${displayedCards.length > 1 ? 's' : ''}!`
+            : `❌ ${displayedCards.length} Failed Card${displayedCards.length > 1 ? 's' : ''}!`}
         </h2>
 
-        {actualWinningCards.length === 0 ? (
-          <p className="text-center text-xl text-white/80">No winning cards to display yet.</p>
+        {displayedCards.length === 0 ? (
+          <p className="text-center text-xl text-white/80">No cards to display yet.</p>
         ) : (
           <div className="max-h-[70vh] overflow-y-auto pr-2 flex justify-center">
-  <div
-    className={`${
-      actualWinningCards.length === 1
-        ? "w-full max-w-md"
-        : "grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-    }`}
-  >
-              {actualWinningCards.map((card, idx) => {
+            <div
+              className={`${
+                displayedCards.length === 1
+                  ? "w-full max-w-md"
+                  : "grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+              }`}
+            >
+              {displayedCards.map((card, idx) => {
                 const cardGrid = getCardGrid(card);
                 const cardCategoryColumns = ['B', 'I', 'N', 'G', 'O'];
-
                 const alreadyChecked = status === 'failed' && isCardChecked(card.card_id);
 
                 return (
                   <div
                     key={card.card_id}
                     className={`flex flex-col items-center border border-white/10 rounded-lg p-4 bg-black/10 ${
-  actualWinningCards.length === 1 ? "mx-auto" : ""
-}`}
-
+                      displayedCards.length === 1 ? "mx-auto" : ""
+                    }`}
                   >
-                    
-                    <span className="text-sm text-white/40 mb-1">Winner#{idx + 1}</span>
-                    <h3 className="text-2xl font-bold text-blue-300 mb-4">Card ID: {card.card_id}</h3>
+                    <span className="text-sm text-white/40 mb-1">
+                      {status === 'failed' ? `Card#${idx + 1}` : `Winner#${idx + 1}`}
+                    </span>
+                    <h3 className="text-2xl font-bold text-blue-300 mb-4">
+                      Card ID: {card.card_id}
+                    </h3>
 
                     {status === 'failed' && !alreadyChecked && (
                       <button
@@ -145,11 +148,11 @@ export default function WinningCardsModal({
                       </button>
                     )}
 
-                    {alreadyChecked && (
+                    {status === 'failed' && alreadyChecked && (
                       <p className="text-red-400 font-semibold mb-4">This card is already checked.</p>
                     )}
 
-                    {/* BINGO Header Row */}
+                    {/* BINGO Header */}
                     <div className="grid grid-cols-5 gap-1 mb-2 w-full max-w-xs">
                       {cardCategoryColumns.map((col) => (
                         <div
