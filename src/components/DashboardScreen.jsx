@@ -64,7 +64,7 @@ export default function DashboardScreen({
    const [failedCards, setFailedCards] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [manualCardId, setManualCardId] = useState('');
-  const [mode, setMode] = useState('auto');
+  const [mode, setMode] = useState('manual');
   const [status, setStatus] = useState("won");
 const [lastWinCheckNumberCount, setLastWinCheckNumberCount] = useState(0);
 const [passedCards, setPassedCards] = useState([]);
