@@ -572,7 +572,6 @@ if (isWinner) {
 // Update callNextNumber to check gameOverRef
 const callNextNumber = () => {
   if (gameOverRef.current || winningCards.length > 0) {
-    // Prevent further calls if game over or a winner exists
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -588,82 +587,81 @@ const callNextNumber = () => {
   }
 
   const next = remaining[Math.floor(Math.random() * remaining.length)];
-
-  // Temporarily add the number
   const updatedCalledNumbers = [next, ...calledNumbers];
   setCalledNumbers(updatedCalledNumbers);
   setCurrentCall(next);
 
-  // Check if this number causes a win using the updated list
-  const currentCalledNumbersSet = new Set(updatedCalledNumbers);
-  const cardsToCheck = bingoCardsData.filter(card =>
-    selectedCards.includes(card.card_id)
-  );
+  // 🛑 Only check for winners if mode is not manual
+  if (mode !== 'manual') {
+    const currentCalledNumbersSet = new Set(updatedCalledNumbers);
+    const cardsToCheck = bingoCardsData.filter(card =>
+      selectedCards.includes(card.card_id)
+    );
 
-  let winners = [];
-  for (const card of cardsToCheck) {
-    const grid = getCardGrid(card);
-    let isWinner = false;
+    let winners = [];
+    for (const card of cardsToCheck) {
+      const grid = getCardGrid(card);
+      let isWinner = false;
 
-    switch (winningPattern) {
-      case '1 Line':
-        isWinner = checkLinesOnCard(grid, currentCalledNumbersSet) >= 1;
-        break;
-      case '2 Lines':
-        isWinner = checkLinesOnCard(grid, currentCalledNumbersSet) >= 2;
-        break;
-      case 'Full House':
-        isWinner = checkFullHouseWin(grid, currentCalledNumbersSet);
-        break;
-      case 'Four Corners':
-        isWinner = checkFourCornersWin(grid, currentCalledNumbersSet);
-        break;
-      case 'Cross':
-        isWinner = checkCrossPatternWin(grid, currentCalledNumbersSet);
-        break;
-      case 'Inner Corners + Center':
-        isWinner = checkInnerCornersAndCenterWin(grid, currentCalledNumbersSet);
-        break;
-      case 'All':
-        isWinner =
-          checkLinesOnCard(grid, currentCalledNumbersSet) >= 1 ||
-          checkLinesOnCard(grid, currentCalledNumbersSet) >= 2 ||
-          checkFullHouseWin(grid, currentCalledNumbersSet) ||
-          checkFourCornersWin(grid, currentCalledNumbersSet) ||
-          checkCrossPatternWin(grid, currentCalledNumbersSet);
-        break;
-    }
-
-    if (isWinner && !winningCards.includes(card.card_id)) {
-      winners.push(card.card_id);
-    }
-  }
-
-  if (winners.length > 0) {
-    gameOverRef.current = true;
-    setWinningCards(winners);
-    setIsRunning(false);
-    window.speechSynthesis.cancel();
-    setTimeout(() => {
-      setIsModalOpen(true);
-    }, 1000); // Delay modal open by 1 seconds
-    
-
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    // Submit winners
-    winners.forEach(async (cardId) => {
-      try {
-        await submitWinning({ cardId, roundId, shopId, prize });
-      } catch (e) {
-        console.error("Failed to submit winner:", cardId, e);
+      switch (winningPattern) {
+        case '1 Line':
+          isWinner = checkLinesOnCard(grid, currentCalledNumbersSet) >= 1;
+          break;
+        case '2 Lines':
+          isWinner = checkLinesOnCard(grid, currentCalledNumbersSet) >= 2;
+          break;
+        case 'Full House':
+          isWinner = checkFullHouseWin(grid, currentCalledNumbersSet);
+          break;
+        case 'Four Corners':
+          isWinner = checkFourCornersWin(grid, currentCalledNumbersSet);
+          break;
+        case 'Cross':
+          isWinner = checkCrossPatternWin(grid, currentCalledNumbersSet);
+          break;
+        case 'Inner Corners + Center':
+          isWinner = checkInnerCornersAndCenterWin(grid, currentCalledNumbersSet);
+          break;
+        case 'All':
+          isWinner =
+            checkLinesOnCard(grid, currentCalledNumbersSet) >= 1 ||
+            checkLinesOnCard(grid, currentCalledNumbersSet) >= 2 ||
+            checkFullHouseWin(grid, currentCalledNumbersSet) ||
+            checkFourCornersWin(grid, currentCalledNumbersSet) ||
+            checkCrossPatternWin(grid, currentCalledNumbersSet);
+          break;
       }
-    });
+
+      if (isWinner && !winningCards.includes(card.card_id)) {
+        winners.push(card.card_id);
+      }
+    }
+
+    if (winners.length > 0) {
+      gameOverRef.current = true;
+      setWinningCards(winners);
+      setIsRunning(false);
+      window.speechSynthesis.cancel();
+      setTimeout(() => {
+        setIsModalOpen(true);
+      }, 1000);
+
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      winners.forEach(async (cardId) => {
+        try {
+          await submitWinning({ cardId, roundId, shopId, prize });
+        } catch (e) {
+          console.error("Failed to submit winner:", cardId, e);
+        }
+      });
+    }
   }
 };
+
 
   
 
