@@ -10,7 +10,7 @@ export default function CardManagementScreen({ setCurrentView }) {
   const [cardColor, setCardColor] = useState(DEFAULT_COLOR);
   const [bet, setBet] = useState(10);
   const [commission, setCommission] = useState('20%'); // e.g., "10%"
-  const [interval, setInterval] = useState('6 sec'); // e.g., "3 sec"
+  const [interval, setInterval] = useState('5 sec'); // e.g., "3 sec"
   const [pattern, setPattern] = useState('All'); // e.g., "All"
   const [language, setLanguage] = useState('Amharic'); // Default language
   const [balance, setBalance] = useState(0); // initially 0 // This should ideally come from a prop or context
@@ -211,7 +211,7 @@ export default function CardManagementScreen({ setCurrentView }) {
             className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
           >
             <option className="bg-blue-900">5 sec</option>
-            <option className="bg-blue-900">10 sec</option>
+            <option className="bg-blue-900">7 sec</option>
           </select>
         </div>
 
