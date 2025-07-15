@@ -210,6 +210,7 @@ export default function CardManagementScreen({ setCurrentView }) {
             onChange={(e) => setInterval(e.target.value)}
             className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
           >
+            <option className="bg-blue-900">4 sec</option>
             <option className="bg-blue-900">5 sec</option>
             <option className="bg-blue-900">7 sec</option>
           </select>
