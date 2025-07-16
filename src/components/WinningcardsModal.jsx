@@ -49,8 +49,15 @@ export default function WinningCardsModal({
   calledNumbersSet,
   status = 'won',
   failedCards,
+   winningPatterns = {},
 }) {
   const [checkedFailedCards, setCheckedFailedCards] = useState([]);
+   
+  const isWinningCell = (cardId, rowIdx, colIdx) => {
+  const pattern = winningPatterns[cardId];
+  if (!pattern) return false;
+  return pattern.some(([r, c]) => r === rowIdx && c === colIdx);
+};
 
   // Play audio once when modal opens with winners
   useEffect(() => {
@@ -169,17 +176,20 @@ export default function WinningCardsModal({
                       {cardGrid.map((row, rowIndex) => (
                         <div key={rowIndex} className="grid grid-cols-5 gap-1">
                           {row.map((num, colIndex) => (
-                            <div
-                              key={`${card.card_id}-r${rowIndex}-c${colIndex}`}
-                              className={`p-1 text-center font-semibold rounded-sm border border-white/10 text-sm
-                                ${
-                                  num === null
-                                    ? 'bg-gray-700 text-white/80'
-                                    : isMarked(num, calledNumbersSet)
-                                    ? 'bg-green-600 text-white animate-pulse'
-                                    : 'bg-white/5 text-white/60'
-                                }`}
-                            >
+                           <div
+  key={`${card.card_id}-r${rowIndex}-c${colIndex}`}
+  className={`p-1 text-center font-semibold rounded-sm border border-white/10 text-sm
+    ${
+      num === null
+        ? 'bg-gray-700 text-white/80'
+        : isWinningCell(card.card_id, rowIndex, colIndex)
+        ? 'bg-red-600 text-white font-bold animate-pulse'
+        : isMarked(num, calledNumbersSet)
+        ? 'bg-green-600 text-white'
+        : 'bg-white/5 text-white/60'
+    }`}
+>
+
                               {num === null ? 'FREE' : num.toString().padStart(2, '0')}
                             </div>
                           ))}

@@ -70,6 +70,7 @@ const [lastWinCheckNumberCount, setLastWinCheckNumberCount] = useState(0);
 const [passedCards, setPassedCards] = useState([]);
 const [lockedCards, setLockedCards] = useState([]);
 const intervalRef = useRef(null); 
+const [winningPatterns, setWinningPatterns] = useState({});
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
   const [availableVoices, setAvailableVoices] = useState([]);
@@ -315,6 +316,89 @@ const checkInnerCornersAndCenterWin = (grid, calledNumbersSet) => {
 
   return positions.every(num => isMarked(num, calledNumbersSet));
 };
+const getWinningLineCoords = (grid, calledNumbersSet) => {
+  const coords = [];
+
+  // Rows
+  for (let i = 0; i < 5; i++) {
+    if (grid[i].every(num => isMarked(num, calledNumbersSet))) {
+      for (let j = 0; j < 5; j++) coords.push([i, j]);
+    }
+  }
+
+  // Columns
+  for (let j = 0; j < 5; j++) {
+    let colComplete = true;
+    for (let i = 0; i < 5; i++) {
+      if (!isMarked(grid[i][j], calledNumbersSet)) {
+        colComplete = false;
+        break;
+      }
+    }
+    if (colComplete) {
+      for (let i = 0; i < 5; i++) coords.push([i, j]);
+    }
+  }
+
+  // Diagonals
+  let diag1 = true;
+  for (let i = 0; i < 5; i++) {
+    if (!isMarked(grid[i][i], calledNumbersSet)) {
+      diag1 = false;
+      break;
+    }
+  }
+  if (diag1) {
+    for (let i = 0; i < 5; i++) coords.push([i, i]);
+  }
+
+  let diag2 = true;
+  for (let i = 0; i < 5; i++) {
+    if (!isMarked(grid[i][4 - i], calledNumbersSet)) {
+      diag2 = false;
+      break;
+    }
+  }
+  if (diag2) {
+    for (let i = 0; i < 5; i++) coords.push([i, 4 - i]);
+  }
+
+  return coords;
+};
+
+const getFullHouseCoords = () => {
+  const coords = [];
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      coords.push([i, j]);
+    }
+  }
+  return coords;
+};
+
+const getFourCornersCoords = () => [
+  [0, 0],
+  [0, 4],
+  [4, 0],
+  [4, 4],
+];
+
+const getCrossCoords = () => {
+  const coords = [];
+  const middle = 2;
+  for (let i = 0; i < 5; i++) coords.push([middle, i]); // middle row
+  for (let i = 0; i < 5; i++) {
+    if (i !== middle) coords.push([i, middle]); // middle column (excluding center)
+  }
+  return coords;
+};
+const getInnerCornersAndCenterCoords = () => [
+  [1, 1],
+  [1, 3],
+  [3, 1],
+  [3, 3],
+  [2, 2],
+];
 
 const gameOverRef = useRef(false);
  // Main win checking function
@@ -422,7 +506,6 @@ const handleManualCheck = async () => {
 
   const normalizedManualId = Number(manualCardId.trim());
 
-  // 🔔 Check if this card already passed (missed the win opportunity)
   if (lockedCards.includes(normalizedManualId)) {
     alert(`Card ${normalizedManualId} has already passed. It cannot win anymore.`);
     return;
@@ -441,36 +524,87 @@ const handleManualCheck = async () => {
   const currentCalledNumbersSet = new Set(calledNumbers);
   const cardGrid = getCardGrid(card);
   let isWinner = false;
+  let winningCoords = [];
 
   switch (winningPattern) {
-    case '1 Line':
-      if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1) isWinner = true;
+    case '1 Line': {
+      const coords = getWinningLineCoords(cardGrid, currentCalledNumbersSet);
+      if (coords.length >= 5) {
+        isWinner = true;
+        winningCoords = coords;
+      }
       break;
-    case '2 Lines':
-      if (checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2) isWinner = true;
+    }
+    case '2 Lines': {
+      const coords = getWinningLineCoords(cardGrid, currentCalledNumbersSet);
+      if (coords.length >= 10) {
+        isWinner = true;
+        winningCoords = coords;
+      }
       break;
-    case 'Full House':
-      if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
+    }
+    case 'Full House': {
+      if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) {
+        isWinner = true;
+        winningCoords = getFullHouseCoords();
+      }
       break;
-    case 'Four Corners':
-      if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) isWinner = true;
+    }
+    case 'Four Corners': {
+      if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) {
+        isWinner = true;
+        winningCoords = getFourCornersCoords();
+      }
       break;
-    case 'Cross':
-        isWinner = checkCrossPatternWin(cardGrid, currentCalledNumbersSet);
-        break;
-    case 'Inner Corners + Center':
-  isWinner = checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet);
-  break;
-    case 'All':
-      if (
-        checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 1 ||
-        checkLinesOnCard(cardGrid, currentCalledNumbersSet) >= 2 ||
-        checkFullHouseWin(cardGrid, currentCalledNumbersSet) ||
-        checkFourCornersWin(cardGrid, currentCalledNumbersSet) ||
-        checkCrossPatternWin(cardGrid, currentCalledNumbersSet)
-       // checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)
-      ) isWinner = true;
+    }
+    case 'Cross': {
+      if (checkCrossPatternWin(cardGrid, currentCalledNumbersSet)) {
+        isWinner = true;
+        winningCoords = getCrossCoords();
+      }
       break;
+    }
+    case 'Inner Corners + Center': {
+      if (checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)) {
+        isWinner = true;
+        winningCoords = getInnerCornersAndCenterCoords();
+      }
+      break;
+    }
+    case 'All': {
+      const allCoords = [];
+
+      const lineCoords = getWinningLineCoords(cardGrid, currentCalledNumbersSet);
+      if (lineCoords.length >= 5) {
+        allCoords.push(...lineCoords);
+        isWinner = true;
+      }
+
+      if (checkFullHouseWin(cardGrid, currentCalledNumbersSet)) {
+        allCoords.push(...getFullHouseCoords());
+        isWinner = true;
+      }
+
+      if (checkFourCornersWin(cardGrid, currentCalledNumbersSet)) {
+        allCoords.push(...getFourCornersCoords());
+        isWinner = true;
+      }
+
+      if (checkCrossPatternWin(cardGrid, currentCalledNumbersSet)) {
+        allCoords.push(...getCrossCoords());
+        isWinner = true;
+      }
+
+      // Uncomment this if you want to include it in "All"
+      // if (checkInnerCornersAndCenterWin(cardGrid, currentCalledNumbersSet)) {
+      //   allCoords.push(...getInnerCornersAndCenterCoords());
+      //   isWinner = true;
+      // }
+
+      winningCoords = allCoords;
+      break;
+    }
+
     default:
       console.warn(`Unknown winning pattern: ${winningPattern}`);
       break;
@@ -489,7 +623,7 @@ const handleManualCheck = async () => {
       setStatus("won");
       setIsRunning(false);
       setWinningCards([normalizedManualId]);
-      
+      setWinningPatterns({ [normalizedManualId]: winningCoords }); // 🎯 Save winning pattern coords
       setIsModalOpen(true);
       window.speechSynthesis.cancel();
     } catch (error) {
@@ -944,6 +1078,7 @@ const togglePlayPause = () => {
         allBingoCards={bingoCardsData}
         calledNumbersSet={new Set(calledNumbers)}
         status={status}
+        winningPatterns={winningPatterns}
       />
     </div>
   );
