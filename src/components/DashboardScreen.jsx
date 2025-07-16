@@ -761,7 +761,7 @@ const togglePlayPause = () => {
         <div className="w-80 bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col justify-between shadow-xl border border-white/10">
           <div>
             <div className="text-sm mb-2 text-white/60">Current Call</div>
-            <div className="bg-gradient-to-br from-purple-800 to-blue-800 text-yellow-300 rounded-xl p-8 text-center text-9xl font-extrabold tracking-widest shadow-2xl animate-pulse-once border border-purple-700">
+            <div className="bg-gradient-to-br from-purple-800 to-blue-800 text-yellow-300 rounded-xl p-6 text-center text-8xl font-extrabold tracking-widest shadow-2xl animate-pulse-once border border-purple-700">
               {currentCall
                 ? `${getCategory(currentCall)}${currentCall.toString().padStart(2, '0')}`
                 : '---'}
