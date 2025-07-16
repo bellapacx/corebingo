@@ -1051,7 +1051,7 @@ const togglePlayPause = () => {
   return (
     <div
       key={num}
-      className={`py-2 rounded-lg font-bold text-lg transition-all duration-200 shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 hover:ring-4 hover:ring-yellow-300/40 hover:z-10
+      className={`py-2 rounded-lg font-bold text-xl transition-all duration-200 shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 hover:ring-4 hover:ring-yellow-300/40 hover:z-10
         ${isCurrent
           ? 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-400 text-yellow-900 font-extrabold transform scale-110 ring-4 ring-yellow-300 animate-blink shadow-yellow-300/60 shadow-2xl drop-shadow-lg'
           : isCalled
