@@ -71,6 +71,7 @@ const [passedCards, setPassedCards] = useState([]);
 const [lockedCards, setLockedCards] = useState([]);
 const intervalRef = useRef(null); 
 const [winningPatterns, setWinningPatterns] = useState({});
+
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
   const [availableVoices, setAvailableVoices] = useState([]);
@@ -1043,26 +1044,27 @@ const togglePlayPause = () => {
                   {letter}
                 </div>
                 {Array.from({ length: 15 }).map((_, colIndex) => {
-                  const num = min + colIndex;
-                  const isCurrent = num === currentCall;
-                  const isCalled = calledNumbers.includes(num);
+  const num = min + colIndex;
+  const isCurrent = num === currentCall;
+  const isCalled = calledNumbers.includes(num);
 
-                  return (
-                    <div
-                      key={num}
-                      className={`py-2 rounded-lg font-bold text-lg transition-all duration-200 shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 hover:ring-4 hover:ring-yellow-300/40 hover:z-10
-                        ${isCurrent
-                          ? 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-400 text-yellow-900 font-extrabold transform scale-110 ring-4 ring-yellow-300 animate-pulse-once shadow-yellow-300/60 shadow-2xl drop-shadow-lg'
-                          : isCalled
-                            ? 'bg-yellow-100/80 text-yellow-900 border-yellow-300 shadow-yellow-200/40 border font-bold'
-                            : `${categoryColors[letter]} border drop-shadow-md`
-                        }`}
-                      style={{ height: '50px' }}
-                    >
-                      {num.toString().padStart(2, '0')}
-                    </div>
-                  );
-                })}
+  return (
+    <div
+      key={num}
+      className={`py-2 rounded-lg font-bold text-lg transition-all duration-200 shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 hover:ring-4 hover:ring-yellow-300/40 hover:z-10
+        ${isCurrent
+          ? 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-400 text-yellow-900 font-extrabold transform scale-110 ring-4 ring-yellow-300 animate-blink shadow-yellow-300/60 shadow-2xl drop-shadow-lg'
+          : isCalled
+            ? 'bg-yellow-100/80 text-yellow-900 border-yellow-300 shadow-yellow-200/40 border font-bold'
+            : `${categoryColors[letter]} border drop-shadow-md`
+        }`}
+      style={{ height: '50px' }}
+    >
+      {num.toString().padStart(2, '0')}
+    </div>
+  );
+})}
+
               </React.Fragment>
             ))}
           </div>
