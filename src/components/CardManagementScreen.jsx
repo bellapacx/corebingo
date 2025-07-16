@@ -292,7 +292,7 @@ export default function CardManagementScreen({ setCurrentView }) {
                   isSelected ? 'ring-3 ring-offset-2 ring-green-400 bg-green-400 scale-105' : ''
                 }`}
                 style={{
-                  backgroundColor: isSelected ? '#4A90E2' : cardColor,
+                  backgroundColor: isSelected ? '#32a852' : cardColor,
                   color: isSelected ? 'white' : 'white',
                 }}
               >
