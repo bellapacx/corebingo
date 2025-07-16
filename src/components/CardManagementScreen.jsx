@@ -289,7 +289,7 @@ export default function CardManagementScreen({ setCurrentView }) {
                 key={num}
                 onClick={() => toggleCard(num)}
                 className={`w-14 h-14 rounded-xl flex items-center justify-center font-extrabold text-lg transition-all duration-200 ease-in-out transform hover:scale-110 shadow-md ${
-                  isSelected ? 'ring-3 ring-offset-2 ring-blue-400 scale-105' : ''
+                  isSelected ? 'ring-3 ring-offset-2 ring-green-400 scale-105' : ''
                 }`}
                 style={{
                   backgroundColor: isSelected ? '#4A90E2' : cardColor,
