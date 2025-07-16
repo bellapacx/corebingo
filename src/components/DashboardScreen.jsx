@@ -742,7 +742,7 @@ const togglePlayPause = () => {
           HaloBingo 
         </h1>
         <div className="flex items-center space-x-6">
-          <div className="text-white/80 font-medium text-xl flex items-center">
+          <div className="text-white/80 font-medium text-2xl flex items-center">
             <span className="text-blue-300 mr-2">Calls:</span> {calledNumbers.length}/75
           </div>
           <div className="text-green-300 font-bold text-2xl flex items-center">
