@@ -183,9 +183,9 @@ export default function WinningCardsModal({
       num === null
         ? 'bg-gray-700 text-white/80'
         : isWinningCell(card.card_id, rowIndex, colIndex)
-        ? 'bg-red-600 text-white font-bold animate-pulse'
+        ? 'bg-green-600 text-white font-bold animate-pulse'
         : isMarked(num, calledNumbersSet)
-        ? 'bg-green-600 text-white'
+        ? 'bg-red-600 text-white'
         : 'bg-white/5 text-white/60'
     }`}
 >
