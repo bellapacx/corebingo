@@ -31,7 +31,7 @@ export default function CardManagementScreen({ setCurrentView }) {
     const isAlreadySelected = prev.includes(num);
     if (!isAlreadySelected) {
       setSelectedCardId(num); // open modal with this card
-      setIsModalOpen(true);
+      //setIsModalOpen(true);
       return [...prev, num];
     } else {
       return prev.filter((n) => n !== num); // just deselect
