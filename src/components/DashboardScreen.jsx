@@ -71,6 +71,7 @@ const [passedCards, setPassedCards] = useState([]);
 const [lockedCards, setLockedCards] = useState([]);
 const intervalRef = useRef(null); 
 const [winningPatterns, setWinningPatterns] = useState({});
+const [restartedCards, setRestartedCards] = useState([]);
 
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
@@ -853,7 +854,14 @@ const togglePlayPause = () => {
     setCurrentCall(null);
     setWinningCards([]);
     setIsModalOpen(false);
-    setCurrentView('card_management');
+     // 🔥 Pass selectedCards via props to CardManagementScreen
+  setCurrentView({
+    name: 'card_management',
+    props: {
+      selectedCards,
+    },
+  });
+    
     window.speechSynthesis.cancel(); // Stop any speech on restart
   };
 

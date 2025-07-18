@@ -1,97 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import ModalReport from './ModalReport';
 import CardModal from './showCard';
-const TOTAL_CARDS = 200;
-// Adjusted default card color to better suit the dark, sophisticated theme
-const DEFAULT_COLOR = '#3B82F6'; // A shade of blue that would fit the gradient
 
-export default function CardManagementScreen({ setCurrentView }) {
-  const [selectedCards, setSelectedCards] = useState([]);
+const TOTAL_CARDS = 200;
+const DEFAULT_COLOR = '#3B82F6'; // blue shade
+
+export default function CardManagementScreen({ selectedCards, setCurrentView }) {
+  const [selectedCardState, setSelectedCardState] = useState([]);
   const [cardColor, setCardColor] = useState(DEFAULT_COLOR);
   const [bet, setBet] = useState(10);
-  const [commission, setCommission] = useState('20%'); // e.g., "10%"
-  const [interval, setInterval] = useState('4 sec'); // e.g., "3 sec"
-  const [pattern, setPattern] = useState('All'); // e.g., "All"
-  const [language, setLanguage] = useState('Amharic'); // Default language
-  const [balance, setBalance] = useState(0); // initially 0 // This should ideally come from a prop or context
+  const [commission, setCommission] = useState('20%');
+  const [interval, setInterval] = useState('4 sec');
+  const [pattern, setPattern] = useState('All');
+  const [language, setLanguage] = useState('Amharic');
+  const [balance, setBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [blurred, setBlurred] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState(null);
-  // Logout function
-  const handleLogout = () => {
-    localStorage.clear();
-    // Optionally, you can redirect to a login screen or reset the view
-    setCurrentView({ name: 'login' });
-  };
 
-  const toggleCard = (num) => {
-  setSelectedCards((prev) => {
-    const isAlreadySelected = prev.includes(num);
-    if (!isAlreadySelected) {
-      setSelectedCardId(num); // open modal with this card
-      //setIsModalOpen(true);
-      return [...prev, num];
-    } else {
-      return prev.filter((n) => n !== num); // just deselect
+  // Initialize local selected cards state from prop if present
+  useEffect(() => {
+    if (selectedCards && selectedCards.length > 0) {
+      setSelectedCardState(selectedCards);
     }
-  });
-};
+  }, [selectedCards]);
 
-  // Function to handle closing the modal
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedCardId(null);
-  };
+  // Fetch balance on mount
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        // 1. Fetch shop info securely (assumes you are authenticated)
-        const shop_id = localStorage.getItem('shopid'); // Assuming shop_id is stored in localStorage
-        console.log('Shop ID from localStorage:', shop_id);
-        // 2. Fetch shop balance using shop_id
+        const shop_id = localStorage.getItem('shopid');
         const balanceRes = await fetch(`https://bingoapi-qtai.onrender.com/balance/${shop_id}`);
         if (!balanceRes.ok) throw new Error('Failed to fetch balance');
         const { balance } = await balanceRes.json();
-
         setBalance(balance);
       } catch (error) {
         console.error('Error fetching balance:', error);
         alert('❌ Unable to load balance.');
       }
     };
- 
     fetchBalance();
   }, []);
 
-  // Function to calculate the prize
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.clear();
+    setCurrentView({ name: 'login' });
+  };
+
+  // Toggle card selection
+  const toggleCard = (num) => {
+    setSelectedCardState((prev) => {
+      const isAlreadySelected = prev.includes(num);
+      if (!isAlreadySelected) {
+        setSelectedCardId(num); // Open modal for this card
+        // setIsModalOpen(true); // Uncomment if you want modal to open on select
+        return [...prev, num];
+      } else {
+        return prev.filter((n) => n !== num);
+      }
+    });
+  };
+
+  // Close card modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedCardId(null);
+  };
+
+  // Calculate prize based on bet, commission, and selected cards
   const calculatePrize = () => {
-    const numSelectedCards = selectedCards.length;
+    const numSelectedCards = selectedCardState.length;
     const betAmount = bet;
-    // Convert commission string (e.g., "10%") to a decimal (e.g., 0.10)
     const commissionRate = parseFloat(commission) / 100;
 
     if (numSelectedCards === 0 || betAmount <= 0) {
-      return 0; // Return 0 if no cards selected or bet is not positive
+      return 0;
     }
 
     const totalBet = numSelectedCards * betAmount;
-    const calculatedPrize = totalBet * (1 - commissionRate);
-    return calculatedPrize;
+    return totalBet * (1 - commissionRate);
   };
 
+  // Start the game
   const startGame = async () => {
     setIsLoading(true);
     const prize = calculatePrize();
     const parsedInterval = parseInt(interval.split(' ')[0]) * 1000;
 
-    setIsLoading(true);
     try {
-      // 1. Get shop ID securely (based on auth/session)
-      const shopId = localStorage.getItem('shopid'); // Assuming shop_id is stored in localStorage
+      const shopId = localStorage.getItem('shopid');
 
-      // 2. Start the game and store in Firebase
       const res = await fetch("https://bingoapi-qtai.onrender.com/startgame", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -103,23 +104,21 @@ export default function CardManagementScreen({ setCurrentView }) {
           language: language,
           winning_pattern: pattern,
           prize: prize,
-          total_cards: selectedCards.length,
-          selected_cards: selectedCards,
+          total_cards: selectedCardState.length,
+          selected_cards: selectedCardState,
         }),
       });
 
       if (!res.ok) throw new Error("Game creation failed");
       const { round_id } = await res.json();
-      console.log("Game started with round ID:", round_id);
-      const roundid = round_id; // Store round_id for later use
-      // 3. Navigate to the dashboard
+
       setCurrentView({
         name: "dashboard",
         props: {
-          roundId: roundid,
+          roundId: round_id,
           shopId,
           prize,
-          selectedCards,
+          selectedCards: selectedCardState,
           interval: parsedInterval,
           language,
           betPerCard: bet,
@@ -135,7 +134,6 @@ export default function CardManagementScreen({ setCurrentView }) {
     }
   };
 
-  // Get shopId from localStorage for ModalReport
   const shopId = localStorage.getItem('shopid');
 
   return (
@@ -144,7 +142,7 @@ export default function CardManagementScreen({ setCurrentView }) {
       <aside className="w-72 bg-white/10 backdrop-blur-md p-6 flex flex-col gap-5 border-r border-white/20">
         <div className="pb-4 border-b border-white/20">
           <h2 className="text-xl font-bold mb-1 text-purple-300">Selected Cards</h2>
-          <p className="text-4xl font-extrabold text-blue-400">{selectedCards.length}</p>
+          <p className="text-4xl font-extrabold text-blue-400">{selectedCardState.length}</p>
         </div>
 
         {/* Logout Button */}
@@ -176,32 +174,32 @@ export default function CardManagementScreen({ setCurrentView }) {
         </div>
 
         <div
-      className={`flex items-center gap-3 p-3 rounded bg-white/10 border border-white/20
-        transition-filter duration-300 ${!blurred ? 'filter blur-sm' : 'filter blur-0'}`}
-      style={{ maxWidth: '320px' }}
-    >
-      <div className="flex-1 min-w-0">
-        <label className="block text-sm font-semibold mb-1 text-white/70 truncate">
-          Commission
-        </label>
-        <select
-          value={commission}
-          onChange={(e) => setCommission(e.target.value)}
-          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className={`flex items-center gap-3 p-3 rounded bg-white/10 border border-white/20
+          transition-filter duration-300 ${!blurred ? 'filter blur-sm' : 'filter blur-0'}`}
+          style={{ maxWidth: '320px' }}
         >
-          <option className="bg-blue-900">20%</option>
-          <option className="bg-blue-900">30%</option>
-        </select>
-      </div>
+          <div className="flex-1 min-w-0">
+            <label className="block text-sm font-semibold mb-1 text-white/70 truncate">
+              Commission
+            </label>
+            <select
+              value={commission}
+              onChange={(e) => setCommission(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            >
+              <option className="bg-blue-900">20%</option>
+              <option className="bg-blue-900">30%</option>
+            </select>
+          </div>
 
-      <button
-        onClick={() => setBlurred(blurred)}
-        className="whitespace-nowrap px-3 py-2 text-sm rounded bg-purple-600 text-white hover:bg-purple-700 transition"
-        type="button"
-      >
-        {blurred ? 'Unblur' : 'Blur'}
-      </button>
-    </div>
+          <button
+            onClick={() => setBlurred(!blurred)}
+            className="whitespace-nowrap px-3 py-2 text-sm rounded bg-purple-600 text-white hover:bg-purple-700 transition"
+            type="button"
+          >
+            {blurred ? 'Unblur' : 'Blur'}
+          </button>
+        </div>
 
         <div>
           <label className="block text-sm font-semibold mb-1 text-white/70">Call Interval</label>
@@ -226,8 +224,8 @@ export default function CardManagementScreen({ setCurrentView }) {
             <option className="bg-blue-900">All</option>
             <option className="bg-blue-900">1 Line</option>
             <option className="bg-blue-900">2 Lines</option>
-             <option className="bg-blue-900">Four Corners</option>
-              <option className="bg-blue-900">Cross</option>
+            <option className="bg-blue-900">Four Corners</option>
+            <option className="bg-blue-900">Cross</option>
             <option className="bg-blue-900">Inner Corners + Center</option>
             <option className="bg-blue-900">Full House</option>
           </select>
@@ -239,7 +237,7 @@ export default function CardManagementScreen({ setCurrentView }) {
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          >      
+          >
             <option className="bg-blue-900">Amharic</option>
             <option className="bg-blue-900">English</option>
           </select>
@@ -256,34 +254,32 @@ export default function CardManagementScreen({ setCurrentView }) {
           >
             Reports
           </button>
-          
         </div>
+
         <div className="flex justify-end mb-4">
           <button
-            onClick={() => {
-              startGame()
-            }}
-            disabled={selectedCards.length === 0}
+            onClick={startGame}
+            disabled={selectedCardState.length === 0}
             className={`px-8 py-3 rounded-xl font-bold text-white transition transform hover:scale-105 shadow-lg ${
-              selectedCards.length === 0
+              selectedCardState.length === 0
                 ? 'bg-gray-700 cursor-not-allowed'
                 : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600'
             }`}
           >
             {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-                  Starting...
-                </div>
-              ) : (
-                'Start Bingo Game'
-              )}
-            
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                Starting...
+              </div>
+            ) : (
+              'Start Bingo Game'
+            )}
           </button>
         </div>
+
         <div className="grid grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-3">
           {Array.from({ length: TOTAL_CARDS }, (_, i) => i + 1).map((num) => {
-            const isSelected = selectedCards.includes(num);
+            const isSelected = selectedCardState.includes(num);
             return (
               <button
                 key={num}
@@ -293,7 +289,7 @@ export default function CardManagementScreen({ setCurrentView }) {
                 }`}
                 style={{
                   backgroundColor: isSelected ? '#32a852' : cardColor,
-                  color: isSelected ? 'white' : 'white',
+                  color: 'white',
                 }}
               >
                 {num}
@@ -302,17 +298,18 @@ export default function CardManagementScreen({ setCurrentView }) {
           })}
         </div>
       </main>
+
       <ModalReport
         show={showReportModal}
         onClose={() => setShowReportModal(false)}
         shopId={shopId}
       />
-      <CardModal
-  isOpen={isModalOpen}
-  onClose={handleCloseModal}
-  winningCardIds={selectedCardId ? [selectedCardId] : []}
-/>
 
+      <CardModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        winningCardIds={selectedCardId ? [selectedCardId] : []}
+      />
     </div>
   );
 }
