@@ -1055,7 +1055,7 @@ const togglePlayPause = () => {
     ${isCurrent
       ? 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-400 text-yellow-900 font-extrabold transform scale-110 ring-4 ring-yellow-300 animate-blink shadow-yellow-300/60 shadow-2xl drop-shadow-lg'
       : isCalled
-        ? 'bg-yellow-500 text-white border-yellow-300 shadow-md shadow-yellow-200/40 font-bold'
+        ? 'bg-yellow-500 text-white border-yellow-300 shadow-md shadow-yellow-200/40 font-extrabold'
         : `${categoryColors[letter]} border drop-shadow-md`
     }`}
   style={{ height: '50px' }}
