@@ -1,6 +1,6 @@
 // services/api.js
 export async function submitWinning({ cardId, roundId, shopId, prize }) {
-  const response = await fetch('https://bingoapi-qtai.onrender.com/winings', {
+  const response = await fetch('https://corebingoapi.onrender.com/winings', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

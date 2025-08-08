@@ -12,7 +12,7 @@ export default function ModalReport({ show, onClose, shopId }) {
     if (show && shopId) {
       setLoading(true);
       setError(null);
-      fetch(`https://bingoapi-qtai.onrender.com/report/${shopId}`)
+      fetch(`https://corebingoapi.onrender.com/report/${shopId}`)
         .then((res) => {
           if (!res.ok) throw new Error('Failed to fetch reports');
           return res.json();

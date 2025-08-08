@@ -32,7 +32,7 @@ export default function CardManagementScreen({ selectedCards, setCurrentView }) 
     const fetchBalance = async () => {
       try {
         const shop_id = localStorage.getItem('shopid');
-        const balanceRes = await fetch(`https://bingoapi-qtai.onrender.com/balance/${shop_id}`);
+        const balanceRes = await fetch(`https://corebingoapi.onrender.com/balance/${shop_id}`);
         if (!balanceRes.ok) throw new Error('Failed to fetch balance');
         const { balance } = await balanceRes.json();
         setBalance(balance);
@@ -93,7 +93,7 @@ export default function CardManagementScreen({ selectedCards, setCurrentView }) 
     try {
       const shopId = localStorage.getItem('shopid');
 
-      const res = await fetch("https://bingoapi-qtai.onrender.com/startgame", {
+      const res = await fetch("https://corebingoapi.onrender.com/startgame", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -137,179 +137,176 @@ export default function CardManagementScreen({ selectedCards, setCurrentView }) 
   const shopId = localStorage.getItem('shopid');
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white flex overflow-hidden">
-      {/* Settings Panel */}
-      <aside className="w-72 bg-white/10 backdrop-blur-md p-6 flex flex-col gap-5 border-r border-white/20">
-        <div className="pb-4 border-b border-white/20">
-          <h2 className="text-xl font-bold mb-1 text-purple-300">Selected Cards</h2>
-          <p className="text-4xl font-extrabold text-blue-400">{selectedCardState.length}</p>
-        </div>
+    <div className="w-screen h-screen bg-slate-100 text-slate-800 flex overflow-hidden">
+  {/* Sidebar Settings Panel */}
+  <aside className="w-72 bg-white border-r border-slate-200 p-6 flex flex-col gap-6 shadow-sm">
+    <div className="pb-4 border-b border-slate-200">
+      <h2 className="text-lg font-semibold text-slate-700">Selected Cards</h2>
+      <p className="text-3xl font-bold text-slate-900">{selectedCardState.length}</p>
+    </div>
 
-        {/* Logout Button */}
-        <button
-          onClick={handleLogout}
-          className="w-full py-2 mb-2 rounded bg-red-600 hover:bg-red-700 text-white font-bold shadow-md transition"
-        >
-          Logout
-        </button>
+    
 
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-white/70">Card Color</label>
-          <input
-            type="color"
-            value={cardColor}
-            onChange={(e) => setCardColor(e.target.value)}
-            className="w-full h-10 rounded border border-white/30 focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+    
 
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-white/70">Bet Per Card (ETB)</label>
-          <input
-            type="number"
-            value={bet}
-            onChange={(e) => setBet(Number(e.target.value))}
-            className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          />
-        </div>
-
-        <div
-          className={`flex items-center gap-3 p-3 rounded bg-white/10 border border-white/20
-          transition-filter duration-300 ${!blurred ? 'filter blur-sm' : 'filter blur-0'}`}
-          style={{ maxWidth: '320px' }}
-        >
-          <div className="flex-1 min-w-0">
-            <label className="block text-sm font-semibold mb-1 text-white/70 truncate">
-              Commission
-            </label>
-            <select
-              value={commission}
-              onChange={(e) => setCommission(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            >
-              <option className="bg-blue-900">20%</option>
-              <option className="bg-blue-900">30%</option>
-            </select>
-          </div>
-
-          <button
-            onClick={() => setBlurred(!blurred)}
-            className="whitespace-nowrap px-3 py-2 text-sm rounded bg-purple-600 text-white hover:bg-purple-700 transition"
-            type="button"
-          >
-            {blurred ? 'Unblur' : 'Blur'}
-          </button>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-white/70">Call Interval</label>
-          <select
-            value={interval}
-            onChange={(e) => setInterval(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          >
-            <option className="bg-blue-900">4 sec</option>
-            <option className="bg-blue-900">5 sec</option>
-            <option className="bg-blue-900">7 sec</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-white/70">Winning Pattern</label>
-          <select
-            value={pattern}
-            onChange={(e) => setPattern(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          >
-            <option className="bg-blue-900">All</option>
-            <option className="bg-blue-900">1 Line</option>
-            <option className="bg-blue-900">2 Lines</option>
-            <option className="bg-blue-900">Four Corners</option>
-            <option className="bg-blue-900">Cross</option>
-            <option className="bg-blue-900">Inner Corners + Center</option>
-            <option className="bg-blue-900">Full House</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-white/70">Language</label>
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          >
-            <option className="bg-blue-900">Amharic</option>
-            <option className="bg-blue-900">English</option>
-          </select>
-        </div>
-      </aside>
-
-      {/* Cards Grid Panel */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-yellow-400 drop-shadow-md">Card Management</h1>
-          <button
-            className="text-lg font-semibold text-green-300 px-4 py-2 rounded bg-white/10 hover:bg-white/20 transition"
-            onClick={() => setShowReportModal(true)}
-          >
-            Reports
-          </button>
-        </div>
-
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={startGame}
-            disabled={selectedCardState.length === 0}
-            className={`px-8 py-3 rounded-xl font-bold text-white transition transform hover:scale-105 shadow-lg ${
-              selectedCardState.length === 0
-                ? 'bg-gray-700 cursor-not-allowed'
-                : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600'
-            }`}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-                Starting...
-              </div>
-            ) : (
-              'Start Bingo Game'
-            )}
-          </button>
-        </div>
-
-        <div className="grid grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-3">
-          {Array.from({ length: TOTAL_CARDS }, (_, i) => i + 1).map((num) => {
-            const isSelected = selectedCardState.includes(num);
-            return (
-              <button
-                key={num}
-                onClick={() => toggleCard(num)}
-                className={`w-14 h-14 rounded-xl flex items-center justify-center font-extrabold text-lg transition-all duration-200 ease-in-out transform hover:scale-110 shadow-md ${
-                  isSelected ? 'ring-3 ring-offset-2 ring-green-400 bg-green-400 scale-105' : ''
-                }`}
-                style={{
-                  backgroundColor: isSelected ? '#32a852' : cardColor,
-                  color: 'white',
-                }}
-              >
-                {num}
-              </button>
-            );
-          })}
-        </div>
-      </main>
-
-      <ModalReport
-        show={showReportModal}
-        onClose={() => setShowReportModal(false)}
-        shopId={shopId}
-      />
-
-      <CardModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        winningCardIds={selectedCardId ? [selectedCardId] : []}
+    <div>
+      <label className="block text-sm font-medium mb-1">Bet Per Card (ETB)</label>
+      <input
+        type="number"
+        value={bet}
+        onChange={(e) => setBet(Number(e.target.value))}
+        className="w-full px-3 py-2 rounded-md border border-slate-300 focus:ring-2 focus:ring-slate-500"
       />
     </div>
+
+    <div
+      className={`flex items-center gap-3 p-3 rounded-md border border-slate-300 bg-slate-50 ${
+        !blurred ? 'blur-sm' : ''
+      }`}
+    >
+      <div className="flex-1">
+        <label className="block text-sm font-medium mb-1">Commission</label>
+        <select
+          value={commission}
+          onChange={(e) => setCommission(e.target.value)}
+          className="w-full px-3 py-2 rounded-md border border-slate-300"
+        >
+          <option>20%</option>
+          <option>30%</option>
+        </select>
+      </div>
+      <button
+        onClick={() => setBlurred(!blurred)}
+        className="px-3 py-2 text-sm rounded-md bg-slate-800 text-white hover:bg-slate-700"
+      >
+        {blurred ? 'Unblur' : 'Blur'}
+      </button>
+    </div>
+
+    <div>
+      <label className="block text-sm font-medium mb-1">Call Interval</label>
+      <select
+        value={interval}
+        onChange={(e) => setInterval(e.target.value)}
+        className="w-full px-3 py-2 rounded-md border border-slate-300"
+      >
+        <option>4 sec</option>
+        <option>5 sec</option>
+        <option>7 sec</option>
+      </select>
+    </div>
+
+    <div>
+      <label className="block text-sm font-medium mb-1">Winning Pattern</label>
+      <select
+        value={pattern}
+        onChange={(e) => setPattern(e.target.value)}
+        className="w-full px-3 py-2 rounded-md border border-slate-300"
+      >
+        <option>All</option>
+        <option>1 Line</option>
+        <option>2 Lines</option>
+        <option>Four Corners</option>
+        <option>Cross</option>
+        <option>Inner Corners + Center</option>
+        <option>Full House</option>
+      </select>
+    </div>
+
+    <div>
+      <label className="block text-sm font-medium mb-1">Language</label>
+      <select
+        value={language}
+        onChange={(e) => setLanguage(e.target.value)}
+        className="w-full px-3 py-2 rounded-md border border-slate-300"
+      >
+        <option>Amharic</option>
+        <option>English</option>
+      </select>
+    </div>
+  </aside>
+
+  {/* Main Content */}
+  <main className="flex-1 p-6 md:p-10 overflow-y-auto">
+    <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+  {/* Left Title */}
+  <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Lucky Bingo</h1>
+
+  {/* Right Controls */}
+  <div className="flex flex-wrap justify-end gap-3">
+    {/* Reports Button */}
+    <button
+      className="text-sm md:text-base font-medium text-white px-5 py-2.5 rounded-md bg-slate-800 hover:bg-slate-700"
+      onClick={() => setShowReportModal(true)}
+    >
+      Reports
+    </button>
+
+    {/* Start Game Button */}
+    <button
+      onClick={startGame}
+      disabled={selectedCardState.length === 0}
+      className={`px-5 py-2.5 rounded-md font-semibold text-white shadow-md transition min-w-[150px] ${
+        selectedCardState.length === 0
+          ? 'bg-slate-500 cursor-not-allowed'
+          : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600'
+      }`}
+    >
+      {isLoading ? (
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+          Starting...
+        </div>
+      ) : (
+        'Start Bingo Game'
+      )}
+    </button>
+
+    {/* Logout Button */}
+    <button
+      onClick={handleLogout}
+      className="px-5 py-2.5 rounded-md bg-red-500 hover:bg-red-600 text-white font-medium transition"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
+
+    
+
+    <div className="grid grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-2 md:gap-3">
+      {Array.from({ length: TOTAL_CARDS }, (_, i) => i + 1).map((num) => {
+        const isSelected = selectedCardState.includes(num);
+        return (
+          <button
+            key={num}
+            onClick={() => toggleCard(num)}
+            className={`w-12 h-12 bg-slate-100 border border-slate-500 text-slate-800 md:w-14 md:h-14 rounded-lg flex items-center justify-center font-bold transition-all ${
+              isSelected ? 'ring-2 ring-green-500 scale-105' : 'hover:ring-2 hover:ring-slate-300'
+            }`}
+            
+          >
+            {num}
+          </button>
+        );
+      })}
+    </div>
+  </main>
+
+  {/* Modals */}
+  <ModalReport
+    show={showReportModal}
+    onClose={() => setShowReportModal(false)}
+    shopId={shopId}
+  />
+
+  <CardModal
+    isOpen={isModalOpen}
+    onClose={handleCloseModal}
+    winningCardIds={selectedCardId ? [selectedCardId] : []}
+  />
+</div>
+
   );
 }

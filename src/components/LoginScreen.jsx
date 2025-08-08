@@ -20,7 +20,7 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
     setErrorMsg('');
 
     try {
-      const response = await fetch('https://bingoapi-qtai.onrender.com/loginshop', {  // adjust URL as needed
+      const response = await fetch('https://corebingoapi.onrender.com/loginshop', {  // adjust URL as needed
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,101 +55,93 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
   };
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-10 md:p-16 lg:p-24">
-      <div className="flex flex-col md:flex-row w-full max-w-6xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-        {/* Left side - Branding / Illustration */}
-        <div className="hidden md:flex flex-col justify-center items-center flex-1 bg-gradient-to-tr from-blue-600 to-purple-700 p-12">
-          <h1 className="text-white text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-300 to-white">
-            Halo Bingo
-          </h1>
-          <p className="text-white/80 text-lg max-w-xs text-center">
-            Advanced Shop Management Suite<br />Control your shop, manage games & cards easily.
-          </p>
+    <div className="min-h-screen w-screen bg-slate-800 flex items-center justify-center px-4 py-12">
+  <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8 md:p-10 border border-slate-200">
+    
+    {/* Branding */}
+    <div className="text-center mb-8">
+      <h1 className="text-3xl font-bold text-slate-800">
+        Lucky Bingo
+      </h1>
+      <p className="mt-1 text-sm text-slate-500">
+        Shop Management Login
+      </p>
+    </div>
+
+    {/* Login Form */}
+    <form onSubmit={handleLogin} className="space-y-6">
+      <div>
+        <label className="block text-slate-700 font-medium mb-2">Shop ID</label>
+        <input
+          type="text"
+          value={credentials.shopId}
+          onChange={(e) => setCredentials({ ...credentials, shopId: e.target.value })}
+          className="w-full px-4 py-3 border border-slate-300 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+          placeholder="Enter your Shop ID"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-slate-700 font-medium mb-2">Username</label>
+        <input
+          type="text"
+          value={credentials.username}
+          onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+          className="w-full px-4 py-3 border border-slate-300 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+          placeholder="Username"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-slate-700 font-medium mb-2">Password</label>
+        <input
+          type="password"
+          value={credentials.password}
+          onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+          className="w-full px-4 py-3 border border-slate-300 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+          placeholder="Password"
+          required
+        />
+      </div>
+
+      {errorMsg && (
+        <p className="text-red-500 text-center font-medium">{errorMsg}</p>
+      )}
+
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full py-3 bg-slate-800 text-white font-semibold rounded-md hover:bg-slate-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isLoading ? (
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+            Logging in...
+          </div>
+        ) : (
+          'Login'
+        )}
+      </button>
+    </form>
+
+    {/* Security footer */}
+    <div className="mt-6 pt-6 border-t border-slate-200 text-xs text-slate-500 text-center space-y-2">
+      <div className="flex items-center justify-center space-x-4">
+        <div className="flex items-center">
+          <CheckCircle size={16} className="mr-1 text-slate-400" />
+          Secure Login
         </div>
-
-        {/* Right side - Login Form */}
-        <form onSubmit={handleLogin} className="flex-1 p-10 md:p-16">
-          <div className="text-center mb-12">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent text-4xl font-extrabold mb-4 md:hidden">
-              Halo Bingo
-            </div>
-            <p className="text-white/70 text-lg md:text-xl">
-              Advanced Shop Management Suite
-            </p>
-          </div>
-
-          <div className="space-y-8">
-            <div>
-              <label className="block text-white/80 text-base font-semibold mb-3">Shop ID</label>
-              <input
-                type="text"
-                value={credentials.shopId}
-                onChange={(e) => setCredentials({ ...credentials, shopId: e.target.value })}
-                className="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-4 focus:ring-blue-500 transition"
-                placeholder="Enter Shop ID"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-white/80 text-base font-semibold mb-3">Username</label>
-              <input
-                type="text"
-                value={credentials.username}
-                onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-                className="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-4 focus:ring-blue-500 transition"
-                placeholder="Enter username"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-white/80 text-base font-semibold mb-3">Password</label>
-              <input
-                type="password"
-                value={credentials.password}
-                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-                className="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-4 focus:ring-blue-500 transition"
-                placeholder="Enter password"
-                required
-              />
-            </div>
-
-            {errorMsg && (
-              <p className="text-red-400 text-center font-semibold">{errorMsg}</p>
-            )}
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-                  Authenticating...
-                </div>
-              ) : (
-                'Login to Shop'
-              )}
-            </button>
-          </div>
-
-          <div className="mt-10 pt-8 border-t border-white/20">
-            <div className="flex items-center justify-center space-x-8 text-sm text-white/60">
-              <div className="flex items-center">
-                <CheckCircle size={18} className="mr-2" />
-                Secure Login
-              </div>
-              <div className="flex items-center">
-                <Shield size={18} className="mr-2" />
-                Encrypted
-              </div>
-            </div>
-          </div>
-        </form>
+        <div className="flex items-center">
+          <Shield size={16} className="mr-1 text-slate-400" />
+          Encrypted
+        </div>
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 

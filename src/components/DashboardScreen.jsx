@@ -878,222 +878,177 @@ const togglePlayPause = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 p-8 text-white font-sans overflow-hidden">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-white/20 pb-4">
-        <h1 className="text-4xl font-extrabold text-yellow-300 drop-shadow-lg tracking-wide">
-          HaloBingo 
-        </h1>
-        <div className="flex items-center space-x-6">
-          <div className="text-white/80 font-medium text-2xl flex items-center">
-            <span className="text-blue-300 mr-2">Calls:</span> {calledNumbers.length}/75
-          </div>
-          <div className="text-green-300 font-bold text-2xl flex items-center">
-            <span className="text-purple-300 mr-2">Prize:</span> {prize.toFixed(2)} ETB
-          </div>
-          {winningCards.length > 0 && (
-            <div className="text-red-400 font-bold text-2xl flex items-center">
-              <span className="text-red-300 mr-2">Winners:</span> {winningCards.length}
+    <div className="w-screen h-screen bg-slate-100 p-6 text-slate-800 font-sans overflow-hidden">
+  {/* Header */}
+  <div className="flex justify-between items-center mb-6 border-b border-slate-300 pb-4">
+    <h1 className="text-3xl font-bold text-slate-900 tracking-wide">Lucky Bingo</h1>
+    <div className="flex items-center space-x-6">
+      <div className="text-slate-700 font-medium text-lg flex items-center">
+        <span className="mr-2 text-slate-500">Calls:</span> {calledNumbers.length}/75
+      </div>
+      <div className="text-green-600 font-semibold text-lg flex items-center">
+        <span className="mr-2 text-slate-500">Prize:</span> {prize.toFixed(2)} ETB
+      </div>
+      {winningCards.length > 0 && (
+        <div className="text-red-600 font-semibold text-lg flex items-center">
+          <span className="mr-2 text-slate-500">Winners:</span> {winningCards.length}
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Content Area */}
+  <div className="flex space-x-6 h-[calc(100vh-144px)]">
+    {/* Left Panel */}
+    <div className="w-80 bg-white rounded-xl p-6 flex flex-col justify-between shadow-md border border-slate-200">
+      
+
+      <div>
+        <div className="text-base mb-3 text-slate-600 font-medium">Last 5 Called Numbers</div>
+        <div className="grid grid-cols-5 gap-3">
+          {[...calledNumbers.slice(0, 5)].map((n, i) => (
+            <div
+              key={i}
+              className="text-center p-3 bg-slate-100 rounded-lg text-lg font-semibold border border-slate-300"
+            >
+              {n ? n.toString().padStart(2, '0') : '--'}
             </div>
-          )}
+          ))}
         </div>
       </div>
 
-      <div className="flex space-x-8 h-[calc(100vh-160px)]">
-        {/* Left Panel */}
-        <div className="w-80 bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col justify-between shadow-xl border border-white/10">
-          <div>
-            <div className="text-sm mb-2 text-white/60">Current Call</div>
-            <div className="bg-gradient-to-br from-purple-800 to-blue-800 text-yellow-300 rounded-xl p-6 text-center text-8xl font-extrabold tracking-widest shadow-2xl animate-pulse-once border border-purple-700">
-              {currentCall
-                ? `${getCategory(currentCall)}${currentCall.toString().padStart(2, '0')}`
-                : '---'}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-lg mb-3 text-white/70 font-semibold">Last 5 Called Numbers</div>
-            <div className="grid grid-cols-5 gap-3">
-              {[...calledNumbers.slice(0, 5)].map((n, i) => (
-                <div
-                  key={i}
-                  className="text-center p-3 bg-white/10 rounded-lg text-lg font-bold border border-white/20 shadow-inner"
-                >
-                  {n ? n.toString().padStart(2, '0') : '--'}
-                </div>
-              ))}
-              {Array(Math.max(0, 5 - calledNumbers.length))
-                .fill(null)
-                .map((_, i) => (
-                  <div
-                    key={`filler-${i}`}
-                    className="text-center p-3 bg-white/10 rounded-lg text-lg font-bold border border-white/20 shadow-inner"
-                  >
-                    --
-                  </div>
-                ))}
-            </div>
-          </div>
-          <div className="mt-6 mb-2 p-4 border border-white/20 rounded-md bg-white/5 max-w-md w-full" style={{ minWidth: 0 }}>
-  <div className="mb-4 flex items-center gap-6 text-white font-medium">
-    <label className="flex items-center gap-2 cursor-pointer select-none">
+      {/* Auto/Manual + Input */}
+<div className="mt-6 mb-2 p-4 border border-slate-200 rounded-md bg-slate-50 w-full">
+  <div className="mb-4 flex items-center gap-6 text-slate-700 font-medium">
+    <label className="flex items-center gap-2 cursor-pointer">
       <input
         type="radio"
         checked={mode === 'auto'}
         onChange={() => setMode('auto')}
-        className="form-radio text-yellow-400"
+        className="form-radio text-slate-600"
       />
       Auto
     </label>
-    <label className="flex items-center gap-2 cursor-pointer select-none">
+    <label className="flex items-center gap-2 cursor-pointer">
       <input
         type="radio"
         checked={mode === 'manual'}
         onChange={() => setMode('manual')}
-        className="form-radio text-yellow-400"
+        className="form-radio text-slate-600"
       />
       Manual
     </label>
   </div>
 
   {mode === 'manual' && (
-    <div className="flex flex-col sm:flex-row items-center gap-3">
+    <div className="flex flex-col sm:flex-row gap-3 w-full">
       <input
         type="text"
         placeholder="Enter Card ID"
         value={manualCardId}
         onChange={(e) => setManualCardId(e.target.value)}
-        className="flex-grow w-full sm:w-auto bg-transparent border border-white/40 text-white placeholder-white/70 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 min-w-0"
+        className="flex-grow w-full bg-white border border-slate-300 text-slate-800 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-500 min-w-0"
       />
       <button
         onClick={handleManualCheck}
-        className="w-full sm:w-auto bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-semibold px-4 py-2 rounded transition min-w-[80px]"
+        className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white font-semibold px-4 py-2 rounded transition"
       >
         Check
       </button>
     </div>
   )}
-</div>   
-          <div className="grid grid-cols-2 gap-4 mt-6">
-
-            <button
-
-              onClick={togglePlayPause}
-
-              className={`flex items-center bg-blue-500 justify-center px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
-
-                isRunning
-
-                  ? 'bg-red-600 text-white'
-
-                  : 'bg-blue-600 text-white'
-
-              }`}
-
-            >
-
-              {isRunning ? (
-
-                <Pause size={20} className="mr-2" />
-
-              ) : (
-
-                <Play size={20} className="mr-2" />
-
-              )}
-
-              {isRunning ? 'Pause' : 'Start/Resume'}
-
-            </button>
-
-            <button
-
-              onClick={restartGame}
-
-              className="flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
-
-            >
-
-              <RotateCcw size={20} className="mr-2" />
-
-              Restart
-
-            </button>
-
-            <button
-
-              onClick={requestFullScreen}
-
-              className="col-span-2 flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
-
-            >
-
-              <Maximize2 size={20} className="mr-2" />
-
-              Fullscreen
-
-            </button>
-
-          </div>
-
-        </div>
-
-
-          
-        {/* Main Grid for Bingo Numbers - 5 Rows, 16 Columns */}
-        <div className="flex-1 p-6 rounded-2xl bg-white/5 backdrop-blur-md shadow-xl border border-white/10 overflow-y-auto scrollbar-hide">
-          <div className="grid grid-cols-16 gap-x-2 gap-y-2 text-center font-bold text-white text-base">
-            {Object.entries(CATEGORIES).map(([letter, [min, max]]) => (
-              <React.Fragment key={letter}>
-                <div
-                  className={`flex items-center justify-center font-extrabold rounded-lg shadow-lg uppercase text-2xl p-3 border-4 border-white/80 ${categoryColors[letter]}`}
-                  style={{ height: '50px', boxShadow: '0 4px 16px 0 rgba(255,255,255,0.10)' }}
-                >
-                  {letter}
-                </div>
-                {Array.from({ length: 15 }).map((_, colIndex) => {
-  const num = min + colIndex;
-  const isCurrent = num === currentCall;
-  const isCalled = calledNumbers.includes(num);
-
-  return (
-    <div
-  key={num}
-  className={`
-    py-2 rounded-lg font-extrabold text-2xl transition-all duration-200 shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 hover:ring-4 hover:ring-yellow-300/40 hover:z-10
-    ${isCurrent
-      ? 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-400 text-yellow-900 transform scale-110 ring-4 ring-yellow-300 animate-blink shadow-yellow-300/60 shadow-2xl drop-shadow-lg'
-      : isCalled
-        ? 'bg-yellow-500 text-white border-yellow-300 shadow-md shadow-yellow-200/40'
-        : `${categoryColors[letter]} border drop-shadow-md`
-    }
-  `}
-  style={{ height: '50px', minWidth: '40px', lineHeight: '1.2' }}
->
-  {num.toString().padStart(2, '0')}
 </div>
 
 
-  );
-})}
+      {/* Control Buttons */}
+      <div className="grid grid-cols-2 gap-4 mt-6">
+        <button
+          onClick={togglePlayPause}
+          className={`flex items-center justify-center px-4 py-3 rounded-xl font-semibold shadow transition transform hover:scale-105 ${
+            isRunning
+              ? 'bg-red-600 text-white'
+              : 'bg-slate-800 text-white'
+          }`}
+        >
+          {isRunning ? <Pause size={20} className="mr-2" /> : <Play size={20} className="mr-2" />}
+          {isRunning ? 'Pause' : 'Start'}
+        </button>
 
-              </React.Fragment>
-            ))}
-          </div>
+        <button
+          onClick={restartGame}
+          className="flex items-center justify-center bg-slate-700 text-white px-4 py-3 rounded-xl font-semibold shadow hover:bg-slate-600"
+        >
+          <RotateCcw size={20} className="mr-2" />
+          Restart
+        </button>
+
+        <button
+          onClick={requestFullScreen}
+          className="col-span-2 flex items-center justify-center bg-slate-700 text-white px-4 py-3 rounded-xl font-semibold shadow hover:bg-slate-600"
+        >
+          <Maximize2 size={20} className="mr-2" />
+          Fullscreen
+        </button>
+      </div>
+    </div>
+
+    {/* Number Grid */}
+    <div className="flex-1 p-6 rounded-xl bg-white shadow-md border border-slate-200 overflow-y-auto">
+      <div className="grid grid-cols-16 gap-2 text-center font-semibold text-slate-800 text-base">
+        {Object.entries(CATEGORIES).map(([letter, [min, max]]) => (
+          <React.Fragment key={letter}>
+            <div className="col-span-1 flex items-center justify-center text-xl font-bold uppercase bg-slate-100 border border-slate-300 rounded shadow">
+              {letter}
+            </div>
+            {Array.from({ length: 15 }).map((_, colIndex) => {
+              const num = min + colIndex;
+              const isCurrent = num === currentCall;
+              const isCalled = calledNumbers.includes(num);
+
+              return (
+                <div
+                  key={num}
+                  className={`
+                    col-span-1 py-2 rounded-lg text-xl font-bold flex items-center justify-center cursor-pointer transition-all
+                    ${isCurrent
+                      ? 'bg-yellow-300 text-slate-900 ring-2 ring-yellow-500'
+                      : isCalled
+                        ? 'bg-slate-700 text-white'
+                        : 'bg-slate-100 text-slate-800 border border-slate-300'}
+                  `}
+                  style={{ height: '48px' }}
+                >
+                  {num.toString().padStart(2, '0')}
+                </div>
+              );
+            })}
+          </React.Fragment>
+        ))}
+      </div>
+      <div className="justify-self-center mt-16">
+        <div className="bg-slate-100 text-slate-800 rounded-full p-16 w-80 text-center text-6xl font-extrabold tracking-widest shadow-inner border border-slate-300">
+          {currentCall
+            ? `${getCategory(currentCall)}${currentCall.toString().padStart(2, '0')}`
+            : '--'}
         </div>
       </div>
-
-      {/* Winning Cards Modal */}
-      <WinningCardsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        winningCardIds={winningCards}
-        failedCards={failedCards}
-        allBingoCards={bingoCardsData}
-        calledNumbersSet={new Set(calledNumbers)}
-        status={status}
-        winningPatterns={winningPatterns}
-      />
     </div>
+
+    
+  </div>
+
+  {/* Modal */}
+  <WinningCardsModal
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    winningCardIds={winningCards}
+    failedCards={failedCards}
+    allBingoCards={bingoCardsData}
+    calledNumbersSet={new Set(calledNumbers)}
+    status={status}
+    winningPatterns={winningPatterns}
+  />
+</div>
+
   );
 }
