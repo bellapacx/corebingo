@@ -881,7 +881,7 @@ const togglePlayPause = () => {
     <div className="w-screen h-screen bg-slate-100 p-6 text-slate-800 font-sans overflow-hidden">
   {/* Header */}
   <div className="flex justify-between items-center mb-6 border-b border-slate-300 pb-4">
-    <h1 className="text-3xl font-bold text-slate-900 tracking-wide">Lucky Bingo</h1>
+    <h1 className="text-3xl font-bold text-slate-900 tracking-wide">Gojo Bingo</h1>
     <div className="flex items-center space-x-6">
       <div className="text-slate-700 font-medium text-lg flex items-center">
         <span className="mr-2 text-slate-500">Calls:</span> {calledNumbers.length}/75

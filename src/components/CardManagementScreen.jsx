@@ -230,7 +230,7 @@ export default function CardManagementScreen({ selectedCards, setCurrentView }) 
   <main className="flex-1 p-6 md:p-10 overflow-y-auto">
     <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
   {/* Left Title */}
-  <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Lucky Bingo</h1>
+  <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Gojo Bingo</h1>
 
   {/* Right Controls */}
   <div className="flex flex-wrap justify-end gap-3">
