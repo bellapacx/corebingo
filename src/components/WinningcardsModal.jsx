@@ -61,23 +61,36 @@ export default function WinningCardsModal({
 
   // Play audio once when modal opens with winners
   useEffect(() => {
-    if (isOpen && winningCardIds.length > 0 && status === 'won') {
-      const audio = new Audio("/game/win.m4a");
+  let shouldPlay = false;
+  let audioPath = "";
 
-      // Create AudioContext and GainNode for volume boost
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const gainNode = audioContext.createGain();
-      gainNode.gain.value = 3.0;
+  if (isOpen && status === "won" && winningCardIds.length > 0) {
+    shouldPlay = true;
+    audioPath = "/game/win.m4a";
+  } else if (isOpen && status === "failed") {
+    shouldPlay = true;
+    audioPath = "/game/failed.m4a";
+  }
 
-      const source = audioContext.createMediaElementSource(audio);
-      source.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+  if (shouldPlay) {
+    const audio = new Audio(audioPath);
 
-      audio.play().catch((err) => {
-        console.warn("Audio play blocked by browser:", err);
-      });
-    }
-  }, [isOpen, winningCardIds, status]);
+    // Create AudioContext and GainNode for volume boost
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 3.0;
+
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    audio.play().catch((err) => {
+      console.warn("Audio play blocked by browser:", err);
+    });
+  }
+}, [isOpen, status, winningCardIds]);
+
 
   if (!isOpen) return null;
 
