@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, Maximize2 } from 'react-feather';
 import WinningCardsModal from './WinningcardsModal';
-import { submitWinning } from '../service/api'; // Adjust the import path as necessary
+// Adjust the import path as necessary
 import bingoCardsData from '../data/bingoCards.json'; // Ensure this path is correct
 
 const NUMBER_RANGE = Array.from({ length: 75 }, (_, i) => i + 1);
@@ -615,13 +615,7 @@ const handleManualCheck = async () => {
   if (isWinner) {
     console.log(`Manual winner found: Card ID ${manualCardId}`);
     try {
-      const response = await submitWinning({
-        cardId: manualCardId,
-        roundId,
-        shopId,
-        prize,
-      });
-      console.log('Manual winning submission response:', response);
+     
       setStatus("won");
       setIsRunning(false);
       setWinningCards([normalizedManualId]);
