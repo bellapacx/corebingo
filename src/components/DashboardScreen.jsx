@@ -111,7 +111,7 @@ useEffect(() => {
 
     const audioContext = new AudioCtx();
     const gainNode = audioContext.createGain();
-    gainNode.gain.value = 3.0;
+    gainNode.gain.value = 2.0;
 
     const source = audioContext.createMediaElementSource(audio);
     source.connect(gainNode);
