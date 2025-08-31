@@ -99,7 +99,34 @@ useEffect(() => {
   console.log("✅ Correct audio files preloaded by column range");
 }, []);
 
+useEffect(() => {
+    const audio = new Audio("/game/shuffle.m4a");
 
+    // Create AudioContext and GainNode for volume boost
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) {
+      console.warn("AudioContext not supported in this browser");
+      return;
+    }
+
+    const audioContext = new AudioCtx();
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 3.0;
+
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    audio.play().catch((err) => {
+      console.warn("Audio play blocked by browser:", err);
+    });
+
+    // Optional cleanup
+    return () => {
+      source.disconnect();
+      gainNode.disconnect();
+    };
+  }, []); 
   
   const playSoundForCall = (category, number) => {
   const audioPath = `/voicemale/${category.toLowerCase()}_${number}.m4a`;
