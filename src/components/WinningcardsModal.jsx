@@ -106,7 +106,20 @@ export default function WinningCardsModal({
     if (!isCardChecked(cardId)) {
       setCheckedFailedCards((prev) => [...prev, cardId]);
     }
+    playCheckSound();
   };
+// Function to play check sound from public folder
+const playCheckSound = () => {
+  try {
+    // Play sound from public folder
+    const audio = new Audio('/game/lock.m4a'); // Adjust path if needed
+    audio.volume = 1; // Adjust volume as needed (0.0 to 1.0)
+    audio.play().catch(e => console.log("Audio play failed:", e));
+    
+  } catch (error) {
+    console.log("Sound playback error:", error);
+  }
+};
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
