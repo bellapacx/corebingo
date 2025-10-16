@@ -140,6 +140,7 @@ export default function DashboardScreen({
   const intervalRef = useRef(null);
   const [winningPatterns, setWinningPatterns] = useState({});
   const [restartedCards, setRestartedCards] = useState([]);
+  const [bingoCardsData, setBingoCards] = useState([]);
 
   // State and ref for speech synthesis
   const speechUtteranceRef = useRef(null);
@@ -168,18 +169,31 @@ export default function DashboardScreen({
   }, []);
   useEffect(() => {
     const shopId = localStorage.getItem("shopid");
+    console.log("Shop ID from localStorage:", shopId);
+
     if (!shopId) {
+      console.log("No shopId found — using local default cards.");
       setBingoCards(bingoCardsData); // local default
       return;
     }
 
+    console.log(`Fetching data for shop: /data/${shopId}.json`);
+
     fetch(`/data/${shopId}.json`)
       .then((res) => {
+        console.log("Fetch response:", res);
         if (!res.ok) throw new Error("Not found");
         return res.json();
       })
-      .then((data) => setBingoCards(data))
-      .catch(() => alert("connection problem")); // fallback to default
+      .then((data) => {
+        console.log("Fetched bingo data:", data);
+        setBingoCards(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching shop data:", err);
+        alert("Connection problem — using local default.");
+        //setBingoCards(bingoCardsData); // fallback to default
+      });
   }, []);
 
   const playSoundForCall = (category, number) => {
